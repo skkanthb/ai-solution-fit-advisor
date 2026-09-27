@@ -13,6 +13,20 @@ Does a structured, rule-based decomposition give better approach recommendations
 3. Use the prompt below verbatim.
 4. Score each answer against the engine's output on the criteria below. Where the LLM is better, record that too.
 
+## Running it
+
+Manually: paste the prompt below into a fresh chat per use case (no project, memory off).
+
+Automated across models, with one OpenRouter key:
+
+```bash
+export OPENROUTER_API_KEY=sk-or-...
+python3 scripts/run_baseline.py --list-models claude   # find exact model IDs
+python3 scripts/run_baseline.py --models <id1> <id2> <id3> --use-cases O2C-02 P2P-03 LOG-01 P2P-06
+```
+
+Raw answers land in `docs/baseline/raw/`, and a blank scoring sheet in `docs/baseline/scores.csv`. API calls use no system prompt, so answers can differ from the consumer chat apps.
+
 ## Prompt
 
 ```
