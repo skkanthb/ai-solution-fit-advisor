@@ -219,4 +219,11 @@
   if (hit) current = { uc: hit, task: 0 };
   renderNav(); renderUseCase();
   if (VIEWS.indexOf(h) !== -1 && h !== "library") showView(h);
+
+  window.addEventListener("hashchange", function () {
+    var k = (location.hash || "").slice(1).toLowerCase();
+    var u = D.useCases.filter(function (x) { return slug(x.id) === k; })[0];
+    if (u && u !== current.uc) { selectUseCase(u.id); showView("library"); }
+    else if (VIEWS.indexOf(k) !== -1) showView(k);
+  });
 })();
