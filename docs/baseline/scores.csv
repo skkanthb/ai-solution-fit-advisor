@@ -1,0 +1,17 @@
+use_case,model,score_set,decomposition,non_llm_fit,autonomy_controls,evaluation,native_first,total
+O2C-02,gpt-5.2,first_pass,1,1,0,1,1,4
+O2C-02,gpt-5.2,reviewed,2,2,2,1,0,7
+O2C-02,claude-sonnet-4.5,first_pass,1,0,0,1,1,3
+O2C-02,claude-sonnet-4.5,reviewed,1,1,1,1,0,4
+P2P-03,gpt-5.2,first_pass,1,1,0,1,0,3
+P2P-03,gpt-5.2,reviewed,2,2,2,1,1,8
+P2P-03,claude-sonnet-4.5,first_pass,1,0,0,1,1,3
+P2P-03,claude-sonnet-4.5,reviewed,1,0,1,1,0,3
+LOG-01,gpt-5.2,first_pass,1,0,0,1,1,3
+LOG-01,gpt-5.2,reviewed,2,2,0,1,0,5
+LOG-01,claude-sonnet-4.5,first_pass,1,1,0,1,1,4
+LOG-01,claude-sonnet-4.5,reviewed,2,2,1,1,1,7
+P2P-06,gpt-5.2,first_pass,2,1,1,1,1,6
+P2P-06,gpt-5.2,reviewed,2,2,2,1,1,8
+P2P-06,claude-sonnet-4.5,first_pass,2,1,1,1,1,6
+P2P-06,claude-sonnet-4.5,reviewed,1,1,1,1,1,5

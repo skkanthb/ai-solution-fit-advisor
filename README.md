@@ -61,7 +61,7 @@ open index.html
 ## Roadmap
 
 - **v1.1:** free-text intake, where an LLM turns a description into the 12-answer profile and the rules still decide.
-- A published comparison of the engine against a plain LLM prompt on the library use cases ([protocol](docs/llm-baseline.md)).
+- Extend the plain-LLM comparison ([first results](docs/llm-baseline.md)) to all use cases and current models.
 - Planning use cases (demand forecasting, inventory rebalancing).
 
 ## Contributing
