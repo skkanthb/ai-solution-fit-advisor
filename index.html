@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Recommends the right AI approach, or no AI, for each step of an ERP and supply chain use case: rules, ML, optimization, document AI, LLMs, or agents.">
+<title>AI Solution Fit Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --ground: #f4f5f2;
+  --surface: #ffffff;
+  --surface-2: #eceee9;
+  --ink: #161d1b;
+  --ink-2: #3c4643;
+  --muted: #66716c;
+  --line: #d9ddd6;
+  --line-strong: #b9bfb6;
+  --accent: #1d4ea3;
+  --accent-soft: #e3eaf7;
+  --focus: #1d4ea3;
+
+  --f-deterministic: #4d5b6a;
+  --f-ml: #0d6f66;
+  --f-optimization: #8a6200;
+  --f-document: #3b4fa8;
+  --f-llm: #9a3571;
+  --f-agentic: #6340b8;
+  --f-human: #5c5046;
+  --f-bg-deterministic: #e8ecf0;
+  --f-bg-ml: #dff0ed;
+  --f-bg-optimization: #f5ecd6;
+  --f-bg-document: #e5e9f7;
+  --f-bg-llm: #f5e3ee;
+  --f-bg-agentic: #ebe5f8;
+  --f-bg-human: #efebe6;
+
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #121614;
+    --surface: #1a1f1d;
+    --surface-2: #232927;
+    --ink: #e9ece8;
+    --ink-2: #c3cac6;
+    --muted: #93a09a;
+    --line: #2f3734;
+    --line-strong: #46504c;
+    --accent: #8eb0ef;
+    --accent-soft: #1f2b40;
+    --focus: #8eb0ef;
+    --f-deterministic: #a9b7c6;
+    --f-ml: #6fd0c4;
+    --f-optimization: #e2bb5c;
+    --f-document: #a4b3f0;
+    --f-llm: #eb95c7;
+    --f-agentic: #bca5f2;
+    --f-human: #cdbfb2;
+    --f-bg-deterministic: #252c34;
+    --f-bg-ml: #16302d;
+    --f-bg-optimization: #33290f;
+    --f-bg-document: #1f2640;
+    --f-bg-llm: #3a1d2f;
+    --f-bg-agentic: #2a2140;
+    --f-bg-human: #2e2925;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #121614;
+  --surface: #1a1f1d;
+  --surface-2: #232927;
+  --ink: #e9ece8;
+  --ink-2: #c3cac6;
+  --muted: #93a09a;
+  --line: #2f3734;
+  --line-strong: #46504c;
+  --accent: #8eb0ef;
+  --accent-soft: #1f2b40;
+  --focus: #8eb0ef;
+  --f-deterministic: #a9b7c6;
+  --f-ml: #6fd0c4;
+  --f-optimization: #e2bb5c;
+  --f-document: #a4b3f0;
+  --f-llm: #eb95c7;
+  --f-agentic: #bca5f2;
+  --f-human: #cdbfb2;
+  --f-bg-deterministic: #252c34;
+  --f-bg-ml: #16302d;
+  --f-bg-optimization: #33290f;
+  --f-bg-document: #1f2640;
+  --f-bg-llm: #3a1d2f;
+  --f-bg-agentic: #2a2140;
+  --f-bg-human: #2e2925;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 15px/1.55 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; }
+
+/* Header */
+.top { border-bottom: 1px solid var(--line); background: var(--surface); }
+.top-inner { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding-block: 20px 0; }
+.brand h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.brand p { color: var(--muted); font-size: 14px; margin-top: 4px; max-width: 60ch; }
+.tabs { display: flex; gap: 2px; margin-top: 14px; flex-wrap: wrap; }
+.tab { border: 0; background: none; padding: 10px 14px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; font-weight: 500; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.tab:hover { color: var(--ink); }
+.headline { display: flex; gap: 22px; flex-wrap: wrap; padding-bottom: 14px; }
+.hstat { display: flex; flex-direction: column; }
+.hstat b { font-family: var(--display); font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.hstat span { font-size: 12px; color: var(--muted); margin-top: 4px; max-width: 18ch; }
+
+main { padding-block: 24px 64px; }
+.view[hidden] { display: none !important; }
+
+/* Library layout */
+.lib { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 28px; align-items: start; }
+.uc-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+.uc-group + .uc-group { margin-top: 18px; }
+.uc-group h3 { font: 600 11px/1 var(--body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.uc-item { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; width: 100%; text-align: left; border: 0; background: none; padding: 7px 10px; border-radius: var(--radius); cursor: pointer; color: var(--ink-2); }
+.uc-item:hover { background: var(--surface-2); }
+.uc-item[aria-current="true"] { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font-weight: 500; }
+.dots { display: flex; gap: 3px; }
+.dot { width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+.uc-select { display: none; width: 100%; padding: 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); }
+
+.uc-head { display: grid; gap: 10px; }
+.eyebrow { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: 0.02em; }
+.uc-head h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.015em; }
+.uc-head .problem { color: var(--ink-2); max-width: 68ch; }
+.kpis { display: flex; flex-wrap: wrap; gap: 6px; }
+.kpi { font-size: 12px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 99px; color: var(--ink-2); background: var(--surface); }
+.native { margin-top: 6px; border-left: 3px solid var(--f-deterministic); padding: 8px 12px; background: var(--surface); max-width: 72ch; font-size: 14px; }
+.native b { font-weight: 600; }
+
+/* Decomposition strip */
+.section-label { font: 600 11px/1 var(--body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
+.flow { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(190px, 1fr); gap: 0; overflow-x: auto; padding-bottom: 4px; }
+.step { position: relative; text-align: left; border: 1px solid var(--line); background: var(--surface); padding: 12px 14px 12px; cursor: pointer; display: grid; gap: 10px; align-content: space-between; min-height: 120px; }
+.step + .step { border-left: 0; }
+.step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.step:not(:last-child)::after { content: ""; position: absolute; right: -7px; top: 50%; width: 12px; height: 12px; background: var(--surface); border-top: 1px solid var(--line); border-right: 1px solid var(--line); transform: translateY(-50%) rotate(45deg); z-index: 1; }
+.step[aria-pressed="true"] { background: var(--surface-2); box-shadow: inset 0 -3px 0 var(--ink); }
+.step[aria-pressed="true"]:not(:last-child)::after { background: var(--surface-2); }
+.step .sid { font: 500 11px/1 var(--mono); color: var(--muted); }
+.step .sname { font-weight: 500; font-size: 14px; line-height: 1.35; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; color: var(--c); background: var(--cb); width: fit-content; }
+.llm-flag { font: 500 11px/1 var(--mono); color: var(--muted); }
+.llm-flag.yes { color: var(--f-llm); }
+
+/* Result */
+.result { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px; margin-top: 22px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.profile dl { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 13px; }
+.profile dt { color: var(--muted); }
+.profile dd { margin: 0; color: var(--ink); }
+.curator { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); }
+.curator b { display: block; font: 600 11px/1 var(--body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.btn { border: 1px solid var(--line-strong); background: var(--surface); padding: 7px 12px; border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 500; }
+.btn:hover { background: var(--surface-2); }
+.btn.primary { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+.rec { display: grid; gap: 20px; }
+.rec-head { display: grid; gap: 8px; }
+.rec-head h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.rec-head .summary { color: var(--ink-2); }
+.rule-fired { font-size: 13px; color: var(--ink-2); background: var(--surface-2); border-radius: var(--radius); padding: 8px 10px; }
+.rule-fired code { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink); margin-right: 6px; }
+.block h4 { font: 600 11px/1 var(--body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+
+.meter { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; }
+.meter span { height: 8px; border-radius: 2px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.meter span.on { background: var(--ink); box-shadow: none; }
+.meter span.cap { background: repeating-linear-gradient(135deg, var(--line-strong) 0 3px, transparent 3px 6px); box-shadow: inset 0 0 0 1px var(--line); }
+.meter-legend { display: flex; justify-content: space-between; font: 500 11px/1 var(--mono); color: var(--muted); margin-top: 5px; }
+.auto-text { margin-top: 8px; font-size: 14px; }
+.auto-text b { font-weight: 600; }
+.caps { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+
+.cands { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 12px; font-size: 14px; }
+.cand + .cand { border-top: 1px solid var(--line); }
+.cand .n { font-weight: 500; }
+.cand .k { font: 500 11px/1.8 var(--mono); color: var(--muted); text-transform: uppercase; }
+.cand .note { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+.tier { font-size: 13px; color: var(--ink-2); margin-bottom: 8px; }
+
+ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 14px; }
+.whynot { display: grid; gap: 8px; }
+.whynot div { font-size: 14px; }
+.whynot b { font-weight: 600; }
+.evalp { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; margin: 0; }
+.evalp dt { color: var(--muted); }
+.evalp dd { margin: 0; }
+.notes { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 var(--radius) var(--radius) 0; }
+.notes ul { font-size: 14px; }
+.disclaimer { font-size: 12px; color: var(--muted); }
+
+/* Assess */
+.assess { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px; align-items: start; }
+.assess-form { display: grid; gap: 14px; }
+.assess-form .intro { color: var(--ink-2); font-size: 14px; }
+.field { display: grid; gap: 4px; }
+.field label { font-weight: 500; font-size: 14px; }
+.field .help { font-size: 12px; color: var(--muted); }
+.field select { padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); width: 100%; }
+.field.changed select { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.loaded-from { font-size: 13px; color: var(--muted); }
+
+/* Rulebook */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 11px/1.2 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+td code { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+.prose { max-width: 70ch; display: grid; gap: 14px; }
+.prose h2 { font-size: 22px; margin-top: 12px; }
+.prose p, .prose li { color: var(--ink-2); }
+.prose ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.prose a { color: var(--accent); }
+.stack { display: grid; gap: 22px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--ground); padding: 8px 14px; border-radius: var(--radius); font-size: 14px; }
+
+@media (max-width: 900px) {
+  .lib, .result, .assess { grid-template-columns: 1fr; }
+  .uc-nav { position: static; }
+  .uc-groups { display: none; }
+  .uc-select { display: block; }
+}
+@media (max-width: 520px) {
+  .wrap { padding-inline: 16px; }
+  .headline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; }
+  .hstat b { font-size: 21px; }
+  .hstat span { font-size: 11px; }
+  .uc-head h2 { font-size: 23px; }
+  .flow { grid-auto-flow: row; grid-auto-columns: auto; }
+  .step + .step { border-left: 1px solid var(--line); border-top: 0; }
+  .step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+  .step:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .step:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -7px; transform: translateX(-50%) rotate(135deg); }
+  .step { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="top-inner">
+      <div class="brand">
+        <h1>AI Solution Fit Advisor</h1>
+        <p>Pick the right approach for each step of an ERP or supply chain use case before picking a model. Rules decide; nothing here calls an LLM.</p>
+      </div>
+      <div class="headline" aria-label="Library summary">
+        <div class="hstat"><b id="stat-uc">0</b><span>use cases</span></div>
+        <div class="hstat"><b id="stat-steps">0</b><span>steps assessed</span></div>
+        <div class="hstat"><b id="stat-llm">0</b><span>steps that need an LLM</span></div>
+        <div class="hstat"><b id="stat-noai">0</b><span>steps that need no AI</span></div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-library" aria-selected="true">Use case library</button>
+      <button class="tab" role="tab" id="tab-assess" aria-selected="false">Assess a step</button>
+      <button class="tab" role="tab" id="tab-rules" aria-selected="false">Rulebook</button>
+      <button class="tab" role="tab" id="tab-about" aria-selected="false">Method and limits</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="view-library" role="tabpanel" aria-labelledby="tab-library">
+    <div class="lib">
+      <aside class="uc-nav">
+        <label class="uc-select-label" for="uc-select" hidden>Use case</label>
+        <select class="uc-select" id="uc-select" aria-label="Use case"></select>
+        <div class="uc-groups" id="uc-groups"></div>
+      </aside>
+      <div id="uc-detail"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-assess" role="tabpanel" aria-labelledby="tab-assess" hidden>
+    <div class="assess">
+      <form class="card assess-form" id="assess-form" onsubmit="return false">
+        <p class="intro">Answer for one step of your use case. The recommendation updates as you change answers. The sample below is loaded from the library; change any answer to see how the recommendation moves.</p>
+        <p class="loaded-from" id="loaded-from"></p>
+        <div id="assess-fields" class="assess-form"></div>
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="btn-copy-assess">Copy as Markdown</button>
+          <button type="button" class="btn" id="btn-reset">Reset to sample</button>
+        </div>
+      </form>
+      <div class="card" id="assess-result"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+    <div class="stack">
+      <div class="prose">
+        <h2>Rulebook</h2>
+        <p>Rules are checked top to bottom and the first match wins. Order encodes precedence: explicit logic beats learned logic, and the shape of the problem beats the format of the input.</p>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Rule</th><th>When</th><th>Pattern</th><th>Reason</th></tr></thead>
+        <tbody id="rules-body"></tbody>
+      </table></div>
+      <div class="prose"><h2>Autonomy levels</h2><p>Each pattern has a default level. Error cost, irreversible writes, and explainability requirements cap it.</p></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Level</th><th>Name</th><th>Meaning</th></tr></thead>
+        <tbody id="auto-body"></tbody>
+      </table></div>
+      <div class="prose"><h2>Patterns</h2></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Pattern</th><th>LLM</th><th>What it is</th><th>Steps in library</th></tr></thead>
+        <tbody id="pat-body"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <div class="prose">
+      <h2>What this is</h2>
+      <p>A decision aid for AI architects, SI practices, and presales teams. It breaks an enterprise use case into steps and recommends a solution pattern for each: rules, matching, tabular ML, forecasting, optimization, document AI, LLM patterns, agents, or keeping a person in charge.</p>
+      <p>Most use cases turn out to be mixed. A credit hold release process is a rule, a risk model, and an optional LLM summary, not "an AI agent for credit".</p>
+      <h2>How it decides</h2>
+      <ul>
+        <li>Twelve questions describe one step: what it must do, input type, whether the logic is explicit, available history, volume, latency, error cost, explainability, whether it writes to a system of record, data sensitivity, format variability, and constraints.</li>
+        <li>An ordered rulebook maps the answers to a pattern. The rule that fired is shown with every result.</li>
+        <li>Autonomy, controls, model candidates, and the evaluation plan are derived from the pattern and the answers.</li>
+        <li>No LLM is involved in the decision. The same answers always give the same result.</li>
+      </ul>
+      <h2>Limits</h2>
+      <ul>
+        <li>The library profiles and notes reflect one practitioner's ERP and supply chain experience. They have not been validated against measured project outcomes.</li>
+        <li>Real steps are often borderline between two patterns. Treat the output as a starting position for an architecture review, not a verdict.</li>
+        <li>Model names go stale. The registry is dated; check current versions and your contract terms.</li>
+        <li>It does not estimate cost or ROI, and it does not look at your data. Data quality problems will break any pattern.</li>
+        <li>Scope is O2C, P2P, and logistics. Planning, manufacturing, and service are not covered yet.</li>
+      </ul>
+      <h2>Source</h2>
+      <p>Code is MIT licensed; decision content (rules, patterns, use cases) is CC BY 4.0. Source and issue tracker: <a href="https://github.com/skkanthb/ai-solution-fit-advisor" target="_blank" rel="noopener">github.com/skkanthb/ai-solution-fit-advisor</a>.</p>
+    </div>
+  </section>
+</main>
+<textarea id="copy-fallback" hidden rows="8" style="position:fixed;left:16px;right:16px;bottom:70px;width:calc(100% - 32px)" aria-label="Markdown to copy"></textarea>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+window.SFA_DATA = {"questions":[{"id":"task","label":"What does this step need to do?","help":"Describe one step, not the whole use case. Most use cases need two or three steps with different patterns.","options":[{"v":"predict","label":"Estimate a score or probability for a record (risk, propensity, ETA)"},{"v":"classify","label":"Assign a category or route (reason code, resolver, taxonomy)"},{"v":"forecast","label":"Predict future values over time (demand, volume, cash)"},{"v":"optimize","label":"Choose the best plan under constraints (allocate, schedule, select)"},{"v":"match","label":"Link records across sources (payment to invoice, item to master)"},{"v":"extract","label":"Pull fields out of documents, scans, or emails"},{"v":"anomaly","label":"Flag unusual or duplicate records"},{"v":"decide","label":"Apply a policy, check, or decision (approve, hold, validate)"},{"v":"answer","label":"Answer questions from policies, contracts, or other documents"},{"v":"generate","label":"Draft text (messages, summaries, explanations)"},{"v":"act","label":"Carry out multi-step actions across systems"}]},{"id":"modality","label":"What does the input look like?","help":"The dominant input for this step.","options":[{"v":"structured","label":"Structured records (ERP tables, master data)"},{"v":"timeseries","label":"Time series (history by period or by event)"},{"v":"documents","label":"Documents (PDF, scans, images)"},{"v":"text","label":"Free text (email, notes, chat)"},{"v":"mixed","label":"Mixed structured and unstructured"}]},{"id":"logic","label":"Can the decision logic be written down as rules today?","help":"If an experienced analyst can state the rule, it is a rule. This is the most important question.","options":[{"v":"full","label":"Yes, fully (tolerances, thresholds, policy tables)"},{"v":"partial","label":"Partly (rules cover the common cases, judgment covers the rest)"},{"v":"none","label":"No (it depends on patterns or judgment)"}]},{"id":"labels","label":"Do you have historical outcomes for this step?","help":"Past decisions or results you could learn from, such as which invoices were paid late or which matches were confirmed.","options":[{"v":"yes","label":"Yes, thousands of recorded outcomes"},{"v":"some","label":"Some, but sparse or inconsistent"},{"v":"none","label":"None"}]},{"id":"volume","label":"How many items per day?","help":"Drives cost and model size.","options":[{"v":"low","label":"Under 100"},{"v":"medium","label":"100 to 10,000"},{"v":"high","label":"Over 10,000"}]},{"id":"latency","label":"How fast is a result needed?","help":"","options":[{"v":"batch","label":"Batch (hourly or daily)"},{"v":"near","label":"Near real time (minutes)"},{"v":"interactive","label":"Interactive (a person is waiting, seconds)"}]},{"id":"errorCost","label":"What does a wrong result cost?","help":"Think financial exposure, compliance, and customer impact.","options":[{"v":"low","label":"Low (easy to spot and correct)"},{"v":"medium","label":"Medium (rework or delay)"},{"v":"high","label":"High (financial loss, compliance breach, customer harm)"}]},{"id":"explain","label":"Must each result be explainable to an auditor or user?","help":"","options":[{"v":"required","label":"Required (audit, regulation, credit decisions)"},{"v":"helpful","label":"Helpful for adoption"},{"v":"none","label":"Not needed"}]},{"id":"writes","label":"Does the result change a system of record?","help":"Posting, releasing, paying, or sending counts as a write.","options":[{"v":"none","label":"No (advisory or read-only)"},{"v":"reversible","label":"Yes, and it can be reversed (draft, hold, reroute)"},{"v":"irreversible","label":"Yes, and it is hard to reverse (payment, release, customer message)"}]},{"id":"sensitivity","label":"How sensitive is the data?","help":"","options":[{"v":"internal","label":"Internal business data"},{"v":"confidential","label":"Confidential (pricing, contracts, customer terms)"},{"v":"regulated","label":"Regulated (personal data, bank or payment data)"}]},{"id":"variability","label":"How much do input formats vary?","help":"For example, one EDI format versus thousands of supplier invoice layouts.","options":[{"v":"low","label":"Low (standard formats)"},{"v":"moderate","label":"Moderate (a known set of layouts)"},{"v":"high","label":"High (open-ended layouts or free text)"}]},{"id":"constraints","label":"Are there hard constraints the result must respect?","help":"Capacity, contracts, budgets, time windows.","options":[{"v":"yes","label":"Yes"},{"v":"no","label":"No"}]}],"patterns":[{"id":"RULES","name":"Deterministic rules","family":"deterministic","usesLLM":false,"summary":"Encode the logic as configuration, decision tables, or code. Check native ERP capability first.","baseAutonomy":5,"whyNot":[{"alt":"LLM","text":"The logic is already known. An LLM would re-derive it probabilistically, add cost and latency, and make the result harder to audit."},{"alt":"Machine learning","text":"Learning a rule you can already state adds training, drift monitoring, and error for no gain."}],"eval":{"metrics":["Rule coverage (share of items decided without manual touch)","Exception rate by rule","Defect rate found in sample audit"],"baseline":"Current manual or native-ERP process","gate":"Zero known rule conflicts; exception queue sized for the team that works it"}},{"id":"FUZZY","name":"Deterministic + fuzzy matching","family":"deterministic","usesLLM":false,"summary":"Exact keys first, then similarity scoring on names, amounts, dates, and references. Route low-confidence matches to a person.","baseAutonomy":4,"whyNot":[{"alt":"LLM","text":"Matching is a scoring problem over structured fields. String similarity and amount/date tolerances are faster, cheaper, and reproducible. An LLM can help only with reading an unusual free-text reference."},{"alt":"Pure rules","text":"Exact-key rules alone leave the long tail (typos, partial payments, truncated references) to manual work."}],"eval":{"metrics":["Auto-match rate","Match precision on a labeled sample (target near 100%)","Recall on known matches"],"baseline":"Current auto-match rate in ERP","gate":"Precision on auto-matched items meets finance tolerance (typically 99%+) before auto-posting"}},{"id":"TABML","name":"Tabular machine learning","family":"ml","usesLLM":false,"summary":"Supervised model (gradient-boosted trees) trained on your historical outcomes, with reason codes per prediction.","baseAutonomy":4,"whyNot":[{"alt":"LLM","text":"LLMs are not trained on your outcome history and do not produce calibrated probabilities on tabular data. A gradient-boosted model is cheaper per prediction, faster, and gives per-record reason codes."},{"alt":"Rules","text":"The signal is a combination of many factors (history, seasonality, counterparty). Hand-written thresholds miss those interactions."}],"eval":{"metrics":["AUC / precision at top-k","Calibration (predicted vs actual rate)","Lift over current rule or heuristic"],"baseline":"Current rule, heuristic, or 'last value' baseline","gate":"Out-of-time backtest beats baseline on the business metric, not only on AUC"}},{"id":"ANOM","name":"Anomaly detection + rules","family":"ml","usesLLM":false,"summary":"Unsupervised scoring of unusual records, layered on explicit checks. Output is a review queue, not an automatic block.","baseAutonomy":1,"whyNot":[{"alt":"LLM","text":"Unusualness is a statistical property of your data distribution. An LLM has no view of that distribution."},{"alt":"Supervised ML","text":"Without confirmed past cases there is nothing to train a classifier on. Start unsupervised and collect reviewer verdicts as labels."}],"eval":{"metrics":["Precision of flagged items after review","Value recovered or prevented","Reviewer workload per week"],"baseline":"Current audit sampling","gate":"Flag volume fits reviewer capacity with precision high enough that reviewers keep using it"}},{"id":"TS","name":"Time-series forecasting","family":"ml","usesLLM":false,"summary":"Statistical and ML forecasters benchmarked against a naive baseline, with forecast intervals.","baseAutonomy":4,"whyNot":[{"alt":"LLM","text":"General LLMs are not forecasting models. Purpose-built statistical, ML, or time-series foundation models are cheaper and measurably better."},{"alt":"Rules","text":"Fixed rules such as 'last year plus 5%' ignore trend shifts and seasonality."}],"eval":{"metrics":["WAPE / MASE by segment","Bias","Forecast value added over naive"],"baseline":"Seasonal naive forecast","gate":"Beats seasonal naive on held-out periods for the segments that matter"}},{"id":"OPT","name":"Mathematical optimization","family":"optimization","usesLLM":false,"summary":"Model the objective and constraints explicitly and solve with an LP/MIP or constraint solver. Planners approve the proposed plan.","baseAutonomy":2,"whyNot":[{"alt":"LLM or agent","text":"Choosing the best plan under hard constraints is a solver problem. LLMs cannot guarantee feasibility or optimality and will violate constraints silently."},{"alt":"Rules","text":"Greedy rules work for simple cases but leave cost on the table when constraints interact."}],"eval":{"metrics":["Cost or service vs current plan","Constraint violations (must be zero)","Planner acceptance rate"],"baseline":"Current planner decisions on the same historical scenarios","gate":"Zero hard-constraint violations on replayed history and a measurable cost or service gain"}},{"id":"DOCAI","name":"Document AI + validation rules","family":"document","usesLLM":false,"summary":"Pretrained document models extract fields; rules validate them against master data. Low-confidence fields go to a person.","baseAutonomy":4,"whyNot":[{"alt":"General LLM","text":"For known document types at volume, pretrained document models give per-field confidence, lower cost, and stable output. Use an LLM or vision model as a fallback for the layouts they miss."},{"alt":"Templates / OCR only","text":"Template OCR breaks every time a supplier changes layout."}],"eval":{"metrics":["Field-level accuracy","Straight-through processing rate","Touches per document"],"baseline":"Current manual keying time and error rate","gate":"Field accuracy on critical fields (amounts, tax, bank) meets finance tolerance with confidence routing on"}},{"id":"LLMEXT","name":"LLM / vision-model extraction","family":"llm","usesLLM":true,"summary":"A vision-capable LLM returns fields in a fixed schema. Rules validate the output before anything is posted.","baseAutonomy":3,"whyNot":[{"alt":"Document AI","text":"Layouts vary too much, or the source is free-text email, for pretrained document models to cover well."},{"alt":"Manual entry","text":"Volume and variety make manual keying the bottleneck."}],"eval":{"metrics":["Field-level accuracy against a labeled set","Schema-valid output rate","Hallucinated-field rate (values not present in source)"],"baseline":"Manual keying accuracy and time","gate":"No hallucinated values on critical fields in the test set; validation rules catch the rest"}},{"id":"SMALL","name":"Small / fine-tuned text classifier","family":"ml","usesLLM":false,"summary":"Embeddings or a small fine-tuned encoder trained on your labeled text. Cheap at volume and consistent.","baseAutonomy":4,"whyNot":[{"alt":"Large LLM","text":"With labeled examples, a small classifier matches or beats a large LLM on a fixed label set at a fraction of the cost and latency."},{"alt":"Keyword rules","text":"Keyword rules break on phrasing variation and need constant upkeep."}],"eval":{"metrics":["Macro F1 across classes","Accuracy on high-value classes","Share auto-classified above confidence threshold"],"baseline":"Current manual coding or keyword rules","gate":"Meets accuracy target on held-out data, with low-confidence items routed to review"}},{"id":"LLMCLS","name":"LLM classification (bootstrap)","family":"llm","usesLLM":true,"summary":"A small, fast LLM classifies with few-shot examples while labels are scarce. Plan to replace it with a small classifier once reviewed labels exist.","baseAutonomy":3,"whyNot":[{"alt":"Small classifier","text":"There are not yet enough labeled examples to train one. Use the LLM's reviewed outputs to build that label set."},{"alt":"Keyword rules","text":"Free text varies too much for keywords to route reliably."}],"eval":{"metrics":["Accuracy on a reviewed sample","Agreement with expert reviewers","Cost per 1,000 items"],"baseline":"Manual triage","gate":"Reviewer agreement meets target; misroutes are recoverable"}},{"id":"RAG","name":"Retrieval-augmented generation","family":"llm","usesLLM":true,"summary":"Retrieve the relevant passages the user is allowed to see, then answer with citations. Say 'not covered' when the sources do not answer.","baseAutonomy":4,"whyNot":[{"alt":"LLM without retrieval","text":"Policies and contracts are private and change. Without retrieval the model guesses."},{"alt":"Fine-tuning","text":"Fine-tuning does not reliably teach facts and must be redone whenever documents change."},{"alt":"Search only","text":"Keyword search returns documents, not answers. Keep it as the retrieval layer."}],"eval":{"metrics":["Answer correctness on a question set written by policy owners","Citation faithfulness","Correct 'not covered' rate"],"baseline":"Time to answer by asking the policy owner","gate":"No uncited claims on the test set; permission-aware retrieval verified"}},{"id":"LLMGEN","name":"LLM drafting with human review","family":"llm","usesLLM":true,"summary":"An LLM drafts text from facts the system already computed. A person reviews before it is sent or filed.","baseAutonomy":2,"whyNot":[{"alt":"Templates","text":"Fixed templates cannot adapt to account context. Keep templates for legally required wording."},{"alt":"LLM deciding","text":"The LLM drafts. It should not decide the facts it is writing about; those come from rules or models upstream."}],"eval":{"metrics":["Reviewer edit rate","Factual errors vs source data","Time saved per item"],"baseline":"Current time to write manually","gate":"No factual contradictions with source data in the review sample"}},{"id":"AGENTRO","name":"Tool-using LLM, read-only","family":"agentic","usesLLM":true,"summary":"An LLM plans lookups across systems through scoped read-only tools and assembles the answer or case file. No writes.","baseAutonomy":4,"whyNot":[{"alt":"Fixed workflow","text":"The lookups needed differ case by case, so a fixed sequence would miss or over-fetch."},{"alt":"Write-capable agent","text":"Gathering information does not need write access. Keeping it read-only removes most of the risk."}],"eval":{"metrics":["Task success on a scenario set","Tool calls per task","Answers contradicting system data"],"baseline":"Time for a person to gather the same information","gate":"Scenario success meets target; no tool outside the read-only scope is callable"}},{"id":"AGENTACT","name":"Bounded agent with approval gates","family":"agentic","usesLLM":true,"summary":"An LLM executes multi-step changes through scoped tools. Each write passes an approval gate and value limit.","baseAutonomy":2,"whyNot":[{"alt":"Fixed workflow / RPA","text":"Use a fixed workflow if the steps are known. An agent is justified only when the path varies case by case."},{"alt":"Full autonomy","text":"Unapproved writes to a system of record are hard to audit and reverse."}],"eval":{"metrics":["Task success on scenarios","Unauthorized or out-of-policy actions (must be zero)","Approval rejection rate"],"baseline":"Manual handling time","gate":"Zero out-of-policy actions in adversarial and replayed scenarios"}},{"id":"HUMAN","name":"Human decision, AI prepares","family":"human","usesLLM":false,"summary":"Keep the decision with a person. Automate data gathering around it and record decisions so they can become training data later.","baseAutonomy":1,"whyNot":[{"alt":"Automating the decision","text":"The logic is not explicit and the cost of a wrong call is high, or there is no history to learn from. Automating now would be guessing."}],"eval":{"metrics":["Decision cycle time","Share of decisions recorded with reason codes"],"baseline":"Current cycle time","gate":"Enough recorded decisions to revisit automation"}}],"registry":{"asOf":"2026-09","disclaimer":"Named options are starting points, not endorsements. LLM versions change every few months: confirm the current version, pricing, and your contract terms before relying on any entry.","patterns":{"RULES":[{"name":"Native ERP configuration","kind":"native","note":"SAP S/4HANA and Oracle ship configurable checks (tolerances, credit rules, validations). Use them before building anything."},{"name":"DMN decision tables","kind":"open-source","note":"Camunda or Drools when rules must live outside the ERP and be owned by the business."},{"name":"SQL / scripted validation","kind":"open-source","note":"For batch checks across systems."}],"FUZZY":[{"name":"RapidFuzz","kind":"open-source","note":"Fast string similarity for names and references."},{"name":"Splink","kind":"open-source","note":"Probabilistic record linkage with explainable match weights."},{"name":"Native ERP matching rules","kind":"native","note":"Most ERPs support rule-based auto-matching. Measure its rate first."}],"TABML":[{"name":"LightGBM","kind":"open-source","note":"Fast gradient-boosted trees; strong default for tabular data."},{"name":"XGBoost","kind":"open-source","note":"Equivalent alternative with broad platform support."},{"name":"CatBoost","kind":"open-source","note":"Handles many categorical fields (customer, material, plant) with less preprocessing."},{"name":"SHAP","kind":"open-source","note":"Per-prediction reason codes for audit and user trust."},{"name":"Logistic regression","kind":"open-source","note":"Baseline to beat, and the fallback when explainability requirements are strict."}],"ANOM":[{"name":"Isolation Forest (scikit-learn)","kind":"open-source","note":"Simple, fast unsupervised baseline."},{"name":"PyOD","kind":"open-source","note":"Library of detectors to benchmark once reviewers have labeled some flags."}],"TS":[{"name":"StatsForecast (AutoETS, AutoARIMA)","kind":"open-source","note":"Fast statistical baselines at scale."},{"name":"MLForecast with LightGBM","kind":"open-source","note":"Global ML model across many series with external drivers."},{"name":"Chronos / TimesFM","kind":"open-source","note":"Time-series foundation models. Benchmark as challengers, not defaults."}],"OPT":[{"name":"Google OR-Tools (CP-SAT)","kind":"open-source","note":"Scheduling, assignment, and routing with complex constraints."},{"name":"HiGHS","kind":"open-source","note":"Open-source LP/MIP solver."},{"name":"Gurobi / IBM CPLEX","kind":"commercial","note":"Commercial solvers for large MIP models."},{"name":"Pyomo / PuLP","kind":"open-source","note":"Modeling layer so the model is solver-independent."}],"DOCAI":[{"name":"Azure AI Document Intelligence (prebuilt invoice)","kind":"cloud","note":"Prebuilt invoice and receipt models with field confidence."},{"name":"Amazon Textract (AnalyzeExpense)","kind":"cloud","note":"Invoice and receipt extraction."},{"name":"Google Document AI (Invoice Parser)","kind":"cloud","note":"Prebuilt invoice processor."},{"name":"Docling","kind":"open-source","note":"Self-hosted document parsing when data cannot leave your environment."}],"SMALL":[{"name":"Sentence embeddings + logistic regression","kind":"open-source","note":"Fast baseline; often enough."},{"name":"SetFit","kind":"open-source","note":"Few-shot fine-tuning of small encoders from a few hundred labels."},{"name":"Fine-tuned ModernBERT or DeBERTa-v3","kind":"open-source","note":"Higher accuracy with thousands of labels; runs on CPU or a small GPU."}]},"llmTiers":{"small":{"label":"Small, fast LLM","options":[{"name":"Claude Haiku 4.5","kind":"api","vendor":"Anthropic"},{"name":"OpenAI small tier (GPT mini class)","kind":"api","vendor":"OpenAI"},{"name":"Google Gemini Flash tier","kind":"api","vendor":"Google"},{"name":"Open-weight 7–32B (Qwen, Llama, Mistral, Gemma families)","kind":"self-hosted","vendor":"Open weights"}]},"mid":{"label":"Mid-tier LLM","options":[{"name":"Claude Sonnet 5","kind":"api","vendor":"Anthropic"},{"name":"OpenAI flagship GPT tier","kind":"api","vendor":"OpenAI"},{"name":"Google Gemini Pro tier","kind":"api","vendor":"Google"},{"name":"Open-weight 70B+ class","kind":"self-hosted","vendor":"Open weights"}]},"frontier":{"label":"Frontier LLM","options":[{"name":"Claude Opus 5.5","kind":"api","vendor":"Anthropic"},{"name":"OpenAI top reasoning tier","kind":"api","vendor":"OpenAI"},{"name":"Google Gemini top tier","kind":"api","vendor":"Google"}]}},"supporting":{"RAG":[{"name":"Hybrid search (BM25 + vectors)","kind":"open-source","note":"OpenSearch, Elasticsearch, or Postgres with pgvector. Policy language needs exact-term matching as well as semantic search."},{"name":"Reranker","kind":"open-source","note":"Cross-encoder reranking to put the right clause first."}],"AGENTRO":[{"name":"MCP servers with read-only scopes","kind":"open-source","note":"Expose ERP/TMS lookups as narrow tools, not raw database access."}],"AGENTACT":[{"name":"MCP servers with per-tool approval","kind":"open-source","note":"Separate read and write tools; writes require approval and carry value limits."}],"LLMEXT":[{"name":"Structured output / JSON schema mode","kind":"api","note":"Force a fixed schema; reject and retry on schema failure."}]}},"useCases":[{"id":"O2C-01","process":"O2C","title":"Sales order entry from email and PDF","problem":"Customer service reps re-key purchase orders that arrive as PDF attachments or email text from customers not on EDI.","kpis":["Order entry cycle time","Order entry error rate","Touchless order rate"],"nativeFirst":"Move high-volume customers to EDI or a customer portal first. Automate the long tail that remains.","tasks":[{"id":"T1","name":"Extract order header and lines from the customer PO","profile":{"task":"extract","modality":"documents","logic":"none","labels":"some","volume":"medium","latency":"near","errorCost":"medium","explain":"helpful","writes":"reversible","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"LLMEXT","note":"Every customer sends a different layout, and many orders are email body text. Output creates a draft order, never a posted one."},{"id":"T2","name":"Map customer item codes and descriptions to your material master","profile":{"task":"match","modality":"structured","logic":"partial","labels":"yes","volume":"medium","latency":"near","errorCost":"medium","explain":"helpful","writes":"reversible","sensitivity":"internal","variability":"moderate","constraints":"no"},"expected":"FUZZY","note":"Customer-material info records cover most lines. Fuzzy matching on descriptions handles the rest; confirmed matches feed the info records."},{"id":"T3","name":"Validate price, availability, and credit before release","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"medium","latency":"near","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"RULES","note":"Pricing conditions, ATP checks, and credit checks already exist in the ERP. Reuse them on the draft order."}]},{"id":"O2C-02","process":"O2C","title":"Credit hold release","problem":"Orders blocked by credit checks wait in a queue while credit analysts review each one, delaying shipment for customers who would have paid.","kpis":["Time on credit hold","Bad-debt write-offs","Share of holds released without analyst touch"],"nativeFirst":"SAP S/4HANA Credit Management and Oracle credit management support rule-based holds and scoring. Tune those before adding a model.","tasks":[{"id":"T1","name":"Apply credit policy (limit, overdue items, blocks)","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"medium","latency":"near","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"RULES","note":"Credit policy is written down. It stays deterministic."},{"id":"T2","name":"Score the risk of releasing a held order","profile":{"task":"predict","modality":"structured","logic":"partial","labels":"yes","volume":"medium","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"no"},"expected":"TABML","note":"Years of release decisions and subsequent payment behavior are in AR history. The score prioritizes and pre-approves low-risk holds; analysts own the rest."},{"id":"T3","name":"Summarize account context for the credit analyst","profile":{"task":"generate","modality":"mixed","logic":"none","labels":"none","volume":"low","latency":"interactive","errorCost":"low","explain":"helpful","writes":"none","sensitivity":"confidential","variability":"moderate","constraints":"no"},"expected":"LLMGEN","note":"Summarizes exposure, payment trend, disputes, and the model's reason codes. It explains; it does not decide."}]},{"id":"O2C-03","process":"O2C","title":"Cash application","problem":"Incoming payments arrive with incomplete remittance, and AR staff manually match them to open invoices.","kpis":["Auto-match rate","Unapplied cash balance","Days to apply"],"nativeFirst":"Check the auto-match rate of your ERP's existing cash application rules and any ML cash-application feature you already license.","tasks":[{"id":"T1","name":"Extract remittance details from emails and PDF advices","profile":{"task":"extract","modality":"documents","logic":"none","labels":"some","volume":"medium","latency":"batch","errorCost":"medium","explain":"helpful","writes":"none","sensitivity":"regulated","variability":"high","constraints":"no"},"expected":"LLMEXT","note":"Remittance advices come in every format. Bank data in them means the model must run under enterprise terms or in-region."},{"id":"T2","name":"Match payments to open invoices","profile":{"task":"match","modality":"structured","logic":"partial","labels":"yes","volume":"high","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"regulated","variability":"moderate","constraints":"no"},"expected":"FUZZY","note":"Invoice numbers, amounts, and customer references carry most of the signal. Partial payments and short-pays need tolerance rules."},{"id":"T3","name":"Suggest matches for residual unmatched payments","profile":{"task":"predict","modality":"structured","logic":"none","labels":"yes","volume":"medium","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"regulated","variability":"moderate","constraints":"no"},"expected":"TABML","note":"Past manual applications are labels. The model ranks candidate invoice sets for a person to confirm."}]},{"id":"O2C-04","process":"O2C","title":"Collections worklist prioritization","problem":"Collectors work accounts by age or size and miss accounts that are about to go late.","kpis":["DSO","Overdue AR","Collector contacts per recovered dollar"],"nativeFirst":"Most collections modules already build worklists by strategy. Replace only the ranking input.","tasks":[{"id":"T1","name":"Predict which invoices will be paid late","profile":{"task":"predict","modality":"structured","logic":"none","labels":"yes","volume":"high","latency":"batch","errorCost":"medium","explain":"helpful","writes":"none","sensitivity":"confidential","variability":"low","constraints":"no"},"expected":"TABML","note":"Payment history per customer is the strongest signal and sits in AR already."},{"id":"T2","name":"Rank the worklist by expected value at risk","profile":{"task":"decide","modality":"structured","logic":"full","labels":"none","volume":"high","latency":"batch","errorCost":"low","explain":"helpful","writes":"none","sensitivity":"confidential","variability":"low","constraints":"no"},"expected":"RULES","note":"Amount × probability of late payment, sorted. A formula, not a model."},{"id":"T3","name":"Draft dunning emails tailored to the account","profile":{"task":"generate","modality":"mixed","logic":"none","labels":"none","volume":"medium","latency":"batch","errorCost":"medium","explain":"none","writes":"irreversible","sensitivity":"confidential","variability":"moderate","constraints":"no"},"expected":"LLMGEN","note":"Sending to a customer cannot be undone. The collector reviews and sends."}]},{"id":"O2C-05","process":"O2C","title":"Deduction and dispute resolution","problem":"Customers short-pay invoices for pricing, promotions, damages, or shortages. Analysts spend most of their time gathering evidence.","kpis":["Days to resolve","Invalid deductions recovered","Deduction write-offs"],"nativeFirst":"Standardize reason codes in your dispute management module first; classification accuracy depends on them.","tasks":[{"id":"T1","name":"Classify the deduction reason from the customer claim","profile":{"task":"classify","modality":"text","logic":"partial","labels":"yes","volume":"medium","latency":"batch","errorCost":"low","explain":"helpful","writes":"reversible","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"SMALL","note":"Historical deductions already carry analyst-assigned reason codes."},{"id":"T2","name":"Gather evidence (proof of delivery, price agreement, promo terms)","profile":{"task":"act","modality":"mixed","logic":"partial","labels":"none","volume":"medium","latency":"batch","errorCost":"medium","explain":"helpful","writes":"none","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"AGENTRO","note":"What to look up depends on the reason code and the customer. Read-only access across ERP, TMS, and trade promotion systems."},{"id":"T3","name":"Decide whether the deduction is valid","profile":{"task":"decide","modality":"mixed","logic":"partial","labels":"some","volume":"medium","latency":"batch","errorCost":"high","explain":"required","writes":"irreversible","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"HUMAN","note":"Accepting or disputing affects revenue and the customer relationship. The analyst decides from the assembled case file."}]},{"id":"P2P-01","process":"P2P","title":"Supplier delivery risk","problem":"Buyers learn about late deliveries when the goods don't arrive, too late to expedite or re-source.","kpis":["Supplier OTIF","Expedite cost","Production stoppages from late parts"],"nativeFirst":"Confirm supplier confirmations and ASNs are captured consistently; they are the model's best features.","tasks":[{"id":"T1","name":"Predict late delivery risk per PO line","profile":{"task":"predict","modality":"structured","logic":"none","labels":"yes","volume":"high","latency":"batch","errorCost":"medium","explain":"helpful","writes":"none","sensitivity":"internal","variability":"low","constraints":"no"},"expected":"TABML","note":"PO history with promised vs actual receipt dates is the label. Features: supplier, material, lead time, confirmation status, lane."},{"id":"T2","name":"Explain the risk drivers to the buyer","profile":{"task":"generate","modality":"structured","logic":"none","labels":"none","volume":"medium","latency":"interactive","errorCost":"low","explain":"helpful","writes":"none","sensitivity":"internal","variability":"low","constraints":"no"},"expected":"LLMGEN","note":"Turns the model's reason codes into a sentence. Optional; a well-designed table of reason codes may be enough."}]},{"id":"P2P-02","process":"P2P","title":"Invoice capture and validation","problem":"AP keys supplier invoices from PDF and paper, then checks them against vendor master and tax rules.","kpis":["Cost per invoice","Touchless invoice rate","Invoice cycle time"],"nativeFirst":"Push large suppliers to e-invoicing or a supplier portal. Extraction is for the rest.","tasks":[{"id":"T1","name":"Extract header and line fields from supplier invoices","profile":{"task":"extract","modality":"documents","logic":"none","labels":"yes","volume":"high","latency":"batch","errorCost":"high","explain":"helpful","writes":"reversible","sensitivity":"regulated","variability":"moderate","constraints":"no"},"expected":"DOCAI","note":"Invoices are a well-served document type. Prebuilt models with confidence scores beat a general LLM on cost at this volume."},{"id":"T2","name":"Validate against vendor master, PO, and tax rules","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"high","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"regulated","variability":"low","constraints":"yes"},"expected":"RULES","note":"Bank detail changes must never be accepted from an invoice. That is a control, not a prediction."}]},{"id":"P2P-03","process":"P2P","title":"Three-way match exception resolution","problem":"Invoices that fail PO / goods receipt / invoice matching sit blocked while AP chases buyers and receivers.","kpis":["Blocked invoice aging","Lost early-payment discounts","Exceptions per 1,000 invoices"],"nativeFirst":"Review tolerance keys in SAP or Oracle match tolerances first. Poorly set tolerances create most exceptions.","tasks":[{"id":"T1","name":"Apply price and quantity tolerances","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"high","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"RULES","note":"Native ERP functionality. No AI."},{"id":"T2","name":"Route each exception to the right resolver","profile":{"task":"classify","modality":"structured","logic":"partial","labels":"yes","volume":"medium","latency":"batch","errorCost":"low","explain":"helpful","writes":"reversible","sensitivity":"internal","variability":"low","constraints":"no"},"expected":"TABML","note":"Exception type, variance, supplier, and plant predict who resolves it. Past resolutions are the labels."},{"id":"T3","name":"Summarize the exception and suggested fix","profile":{"task":"generate","modality":"structured","logic":"none","labels":"none","volume":"medium","latency":"batch","errorCost":"low","explain":"helpful","writes":"none","sensitivity":"internal","variability":"low","constraints":"no"},"expected":"LLMGEN","note":"Cuts reading time for the resolver. The suggested fix comes from rules on the variance type, not from the LLM."}]},{"id":"P2P-04","process":"P2P","title":"Spend classification","problem":"PO and invoice lines are coded inconsistently, so spend analytics and category strategies run on bad data.","kpis":["Share of spend classified","Classification accuracy","Addressable spend identified"],"nativeFirst":"Enforce category selection on catalog and PO forms for new spend. Classification cleans the backlog and free-text lines.","tasks":[{"id":"T1","name":"Classify line descriptions into the category taxonomy","profile":{"task":"classify","modality":"text","logic":"partial","labels":"yes","volume":"high","latency":"batch","errorCost":"low","explain":"none","writes":"reversible","sensitivity":"internal","variability":"high","constraints":"no"},"expected":"SMALL","note":"Existing coded lines are the training set. Volume makes per-call LLM cost add up."},{"id":"T2","name":"Classify new categories that have no labeled examples","profile":{"task":"classify","modality":"text","logic":"none","labels":"none","volume":"low","latency":"batch","errorCost":"low","explain":"none","writes":"reversible","sensitivity":"internal","variability":"high","constraints":"no"},"expected":"LLMCLS","note":"An LLM bootstraps labels for new or rare categories; reviewed results retrain the small classifier."}]},{"id":"P2P-05","process":"P2P","title":"Duplicate invoice and payment detection","problem":"Duplicate invoices slip through when invoice numbers are keyed differently or submitted through two channels.","kpis":["Duplicate payments prevented","Recovery audit findings"],"nativeFirst":"Turn on your ERP's duplicate invoice check and confirm which fields it compares.","tasks":[{"id":"T1","name":"Detect exact and near-duplicate invoices before payment","profile":{"task":"match","modality":"structured","logic":"partial","labels":"some","volume":"high","latency":"batch","errorCost":"high","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"moderate","constraints":"no"},"expected":"FUZZY","note":"Normalized invoice number, amount, date window, and supplier. Holds the invoice for review; it never cancels one."},{"id":"T2","name":"Flag unusual invoices and payment patterns","profile":{"task":"anomaly","modality":"structured","logic":"none","labels":"none","volume":"high","latency":"batch","errorCost":"high","explain":"required","writes":"none","sensitivity":"confidential","variability":"moderate","constraints":"no"},"expected":"ANOM","note":"Split invoices, round amounts, new suppliers with high volume. Output is an audit queue."}]},{"id":"P2P-06","process":"P2P","title":"Procurement policy and contract Q&A","problem":"Buyers and requesters email procurement to ask which policy applies or what a contract says about terms, rebates, or renewal.","kpis":["Time to answer","Policy compliance","Missed rebates or auto-renewals"],"nativeFirst":"Get contracts into one repository with metadata. Q&A over scattered files fails on retrieval, not on the model.","tasks":[{"id":"T1","name":"Answer questions from policy and contract documents","profile":{"task":"answer","modality":"documents","logic":"none","labels":"none","volume":"low","latency":"interactive","errorCost":"medium","explain":"required","writes":"none","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"RAG","note":"An LLM is the right tool here. Answers cite the clause, and users see only contracts they are permitted to see."},{"id":"T2","name":"Extract key terms (payment terms, rebates, expiry, auto-renewal)","profile":{"task":"extract","modality":"documents","logic":"none","labels":"some","volume":"low","latency":"batch","errorCost":"medium","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"LLMEXT","note":"Contract language varies too much for templates. Extracted terms populate contract metadata after review."}]},{"id":"LOG-01","process":"Logistics","title":"Shipment ETA and delay mitigation","problem":"Planners find out about late shipments from customers or carriers, then scramble to re-plan affected orders.","kpis":["Customer OTIF","Expedite cost","Proactive delay notifications"],"nativeFirst":"Get carrier milestone events flowing into the TMS or a visibility platform. Without events, there is nothing to predict from.","tasks":[{"id":"T1","name":"Predict ETA and delay risk per shipment","profile":{"task":"predict","modality":"timeseries","logic":"none","labels":"yes","volume":"high","latency":"near","errorCost":"medium","explain":"helpful","writes":"none","sensitivity":"internal","variability":"moderate","constraints":"no"},"expected":"TABML","note":"Lane, carrier, milestone timing, and dwell history. Visibility platforms may already provide this; compare before building."},{"id":"T2","name":"Re-plan affected orders (reallocate stock, expedite, split)","profile":{"task":"optimize","modality":"structured","logic":"partial","labels":"some","volume":"low","latency":"near","errorCost":"high","explain":"helpful","writes":"reversible","sensitivity":"internal","variability":"moderate","constraints":"yes"},"expected":"OPT","note":"Inventory, customer priority, and expedite cost trade off under capacity limits. The planner approves the plan."},{"id":"T3","name":"Draft the customer delay notification","profile":{"task":"generate","modality":"structured","logic":"none","labels":"none","volume":"medium","latency":"near","errorCost":"medium","explain":"none","writes":"irreversible","sensitivity":"confidential","variability":"low","constraints":"no"},"expected":"LLMGEN","note":"Uses the new ETA and the approved plan. Reviewed before sending, or templated if wording must be fixed."}]},{"id":"LOG-02","process":"Logistics","title":"Carrier selection and load tendering","problem":"Loads are tendered by habit or a static routing guide, missing cheaper or more reliable options.","kpis":["Freight cost per unit","Tender acceptance rate","On-time pickup"],"nativeFirst":"Most TMS platforms include an optimizer. Check whether it is configured and used before building one.","tasks":[{"id":"T1","name":"Select carrier and mode per load","profile":{"task":"optimize","modality":"structured","logic":"partial","labels":"yes","volume":"medium","latency":"batch","errorCost":"medium","explain":"helpful","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"OPT","note":"Rates, capacity commitments, service levels, and allocation targets are constraints. That is a solver problem."},{"id":"T2","name":"Apply routing guide and contract rules","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"medium","latency":"batch","errorCost":"medium","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"RULES","note":"Hazmat, customer-mandated carriers, and lane restrictions are hard rules applied before and after optimization."}]},{"id":"LOG-03","process":"Logistics","title":"Freight invoice audit","problem":"Carrier invoices include accessorials and rate errors that go unchecked and get paid.","kpis":["Overbilling recovered","Audit cost per invoice"],"nativeFirst":"Receive EDI 210 invoices where possible; audit is then mostly rules.","tasks":[{"id":"T1","name":"Compare billed charges to contracted rates and accessorials","profile":{"task":"decide","modality":"structured","logic":"full","labels":"yes","volume":"high","latency":"batch","errorCost":"medium","explain":"required","writes":"reversible","sensitivity":"confidential","variability":"low","constraints":"yes"},"expected":"RULES","note":"Rate tables and accessorial schedules are explicit. This use case needs little or no AI."},{"id":"T2","name":"Extract data from non-EDI freight invoices","profile":{"task":"extract","modality":"documents","logic":"none","labels":"some","volume":"medium","latency":"batch","errorCost":"medium","explain":"helpful","writes":"reversible","sensitivity":"confidential","variability":"moderate","constraints":"no"},"expected":"DOCAI","note":"A known set of carrier layouts. Prebuilt or custom-trained document models."}]},{"id":"LOG-04","process":"Logistics","title":"\"Where is my order\" inquiries","problem":"Customer service answers order-status emails and chats by looking up the order, delivery, and shipment in three systems.","kpis":["Inquiry handling time","First-contact resolution","Inquiry volume per order"],"nativeFirst":"A self-service order-status page removes a large share of these inquiries without any AI.","tasks":[{"id":"T1","name":"Look up order, delivery, and shipment status and answer","profile":{"task":"act","modality":"text","logic":"partial","labels":"none","volume":"medium","latency":"interactive","errorCost":"low","explain":"none","writes":"none","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"AGENTRO","note":"Read-only tools into ERP and TMS. The customer must be verified before any order data is returned."},{"id":"T2","name":"Detect complaints and claims that need a person","profile":{"task":"classify","modality":"text","logic":"partial","labels":"some","volume":"medium","latency":"interactive","errorCost":"medium","explain":"none","writes":"reversible","sensitivity":"confidential","variability":"high","constraints":"no"},"expected":"LLMCLS","note":"Damage claims, cancellations, and angry customers route to a person immediately."}]}]};
+</script>
+<script>
+/*
+ * AI Solution Fit Advisor — decision engine.
+ * Pure functions, no dependencies. Runs in the browser and in Node.
+ * The engine is deterministic: same profile in, same recommendation out.
+ */
+(function (root) {
+  "use strict";
+
+  var STRUCTURED = ["structured", "timeseries"];
+  function isStructured(p) { return STRUCTURED.indexOf(p.modality) !== -1; }
+
+  // Ordered rulebook. First match wins. Order encodes precedence:
+  // explicit logic beats learned logic; problem shape beats input format.
+  var RULES = [
+    { id: "R01", pattern: "HUMAN", when: function (p) { return p.task === "forecast" && p.labels === "none"; },
+      label: "Forecast with no history",
+      why: "There is no history to learn from. Start with planner judgment and a naive baseline, and start recording actuals." },
+    { id: "R02", pattern: "TS", when: function (p) { return p.task === "forecast"; },
+      label: "Forecast with history",
+      why: "Predicting values over time from history is a forecasting problem. Use purpose-built forecasters benchmarked against a naive baseline." },
+    { id: "R03", pattern: "OPT", when: function (p) { return p.task === "optimize" && p.constraints === "yes"; },
+      label: "Choose a plan under hard constraints",
+      why: "Choosing the best plan under hard constraints needs a solver that guarantees feasibility." },
+    { id: "R04", pattern: "RULES", when: function (p) { return p.task === "optimize"; },
+      label: "Choose a plan, no hard constraints",
+      why: "Without binding constraints, ranking by a cost or value formula is usually enough." },
+    { id: "R05", pattern: "RULES",
+      when: function (p) { return p.logic === "full" && (isStructured(p) || p.task === "act" || p.task === "generate"); },
+      label: "Logic fully explicit",
+      why: "The logic can already be written down. If you can write the rule, write the rule. For actions, that means a fixed workflow; for text, a template." },
+    { id: "R06", pattern: "HUMAN", when: function (p) { return p.task === "decide" && p.errorCost === "high"; },
+      label: "Judgment call with high error cost",
+      why: "The decision is not fully explicit and a wrong call is costly. Keep the decision with a person and automate the preparation." },
+    { id: "R07", pattern: "TABML", when: function (p) { return p.task === "decide" && isStructured(p) && p.labels === "yes"; },
+      label: "Judgment call, structured data, recorded outcomes",
+      why: "Past decisions on structured data can train a model that imitates them, with reason codes." },
+    { id: "R08", pattern: "HUMAN", when: function (p) { return p.task === "decide"; },
+      label: "Judgment call, no basis to automate",
+      why: "There is neither explicit logic nor enough recorded outcomes to automate this decision yet." },
+    { id: "R09", pattern: "FUZZY", when: function (p) { return p.task === "match"; },
+      label: "Link records across sources",
+      why: "Linking records is a scoring problem over keys and tolerances: exact rules first, similarity for the rest." },
+    { id: "R10", pattern: "TABML", when: function (p) { return p.task === "anomaly" && p.labels === "yes"; },
+      label: "Unusual records with confirmed past cases",
+      why: "Confirmed past cases make this a supervised classification problem." },
+    { id: "R11", pattern: "ANOM", when: function (p) { return p.task === "anomaly"; },
+      label: "Unusual records, no confirmed cases",
+      why: "Without confirmed past cases, score unusualness statistically and build labels from reviewer verdicts." },
+    { id: "R12", pattern: "TABML",
+      when: function (p) { return (p.task === "predict" || p.task === "classify") && isStructured(p) && p.labels !== "none"; },
+      label: "Score or classify structured records with history",
+      why: "Structured records with historical outcomes are the home ground of gradient-boosted models." },
+    { id: "R13", pattern: "HUMAN",
+      when: function (p) { return (p.task === "predict" || p.task === "classify") && isStructured(p); },
+      label: "Score structured records, no history",
+      why: "No outcomes to learn from. Use simple heuristics, let people decide, and record outcomes so a model becomes possible." },
+    { id: "R14", pattern: "SMALL",
+      when: function (p) { return (p.task === "predict" || p.task === "classify") && p.labels === "yes"; },
+      label: "Classify text with many labeled examples",
+      why: "Labeled text lets a small classifier do the job consistently and cheaply." },
+    { id: "R15", pattern: "LLMCLS", when: function (p) { return p.task === "predict" || p.task === "classify"; },
+      label: "Classify text with few or no labels",
+      why: "Too few labels to train a classifier. A small LLM can classify few-shot while reviewed outputs build the label set." },
+    { id: "R16", pattern: "DOCAI", when: function (p) { return p.task === "extract" && p.modality === "documents" && p.variability !== "high"; },
+      label: "Extract from documents with known layouts",
+      why: "Known document types with a limited set of layouts are well served by pretrained document models with field confidence." },
+    { id: "R17", pattern: "LLMEXT", when: function (p) { return p.task === "extract"; },
+      label: "Extract from highly varied documents or free text",
+      why: "Layouts vary too much, or the source is free text. A vision-capable LLM with a fixed output schema covers the variety." },
+    { id: "R18", pattern: "RAG", when: function (p) { return p.task === "answer"; },
+      label: "Answer questions from documents",
+      why: "Answers must come from your documents. Retrieve first, then generate with citations." },
+    { id: "R19", pattern: "LLMGEN", when: function (p) { return p.task === "generate"; },
+      label: "Draft text that varies by case",
+      why: "Drafting varied text is what LLMs are good at. Facts come from upstream systems; a person reviews." },
+    { id: "R20", pattern: "AGENTRO", when: function (p) { return p.task === "act" && p.writes === "none"; },
+      label: "Variable multi-step lookups, no writes",
+      why: "The steps vary by case, so a tool-using LLM plans them. It needs only read access." },
+    { id: "R21", pattern: "AGENTACT", when: function (p) { return p.task === "act"; },
+      label: "Variable multi-step actions with writes",
+      why: "The steps vary by case and change systems of record. Use a bounded agent with approval on every write." }
+  ];
+  var FALLBACK = { id: "R99", pattern: "HUMAN", label: "No rule matched", why: "The profile did not match a known pattern. Keep a person in the loop and refine the step definition." };
+
+  var AUTONOMY = [
+    { level: 0, name: "No automation", text: "People do the work." },
+    { level: 1, name: "Informs", text: "The system surfaces scores, flags, or context. A person decides and acts." },
+    { level: 2, name: "Recommends", text: "The system proposes a specific result. A person approves every item." },
+    { level: 3, name: "Conditional", text: "High-confidence, low-value items flow automatically. Everything else goes to a person." },
+    { level: 4, name: "Supervised", text: "Acts on all items within limits. People review exceptions and samples." },
+    { level: 5, name: "Autonomous", text: "Deterministic and fully automated, with monitoring." }
+  ];
+
+  function indexBy(list, key) { var o = {}; list.forEach(function (x) { o[x[key]] = x; }); return o; }
+
+  function classify(profile) {
+    for (var i = 0; i < RULES.length; i++) { if (RULES[i].when(profile)) return RULES[i]; }
+    return FALLBACK;
+  }
+
+  function autonomy(pattern, p) {
+    var base = pattern.baseAutonomy;
+    var caps = [];
+    var deterministic = pattern.id === "RULES";
+    if (p.writes === "irreversible") caps.push({ max: deterministic ? 4 : 2, reason: "Writes that are hard to reverse need a person to approve each one." });
+    if (!deterministic && p.errorCost === "high") caps.push({ max: 3, reason: "High error cost: only high-confidence items may flow without review." });
+    if (pattern.usesLLM && p.explain === "required") caps.push({ max: 3, reason: "LLM outputs cannot be fully explained, so auditable results need review." });
+    if (pattern.usesLLM && p.writes !== "none" && p.errorCost !== "low") caps.push({ max: 3, reason: "LLM output that changes a record needs a checkpoint when errors cost more than rework." });
+    var level = caps.reduce(function (m, c) { return Math.min(m, c.max); }, base);
+    var binding = caps.filter(function (c) { return c.max === level && level < base; });
+    return { level: level, base: base, name: AUTONOMY[level].name, text: AUTONOMY[level].text, caps: binding };
+  }
+
+  function controls(pattern, p, level) {
+    var c = [];
+    var fam = pattern.family;
+    c.push("Audit log of inputs, output, and model or rule version for every decision");
+    if (p.writes !== "none" && level <= 2) c.push("Human approval before anything is posted or sent");
+    if (p.writes !== "none" && level >= 3) c.push("Value and volume limits on automatic actions, with a kill switch");
+    if (["TABML", "SMALL", "DOCAI", "LLMEXT", "FUZZY", "LLMCLS"].indexOf(pattern.id) !== -1) c.push("Confidence threshold: items below it route to a person");
+    if (p.explain === "required") {
+      var how = { TABML: "SHAP reason codes per prediction", RULES: "the rule ID that fired", FUZZY: "the fields and scores behind each match", RAG: "citations to the source clause" }[pattern.id] || "a recorded rationale";
+      c.push("Explainability: store " + how);
+    }
+    if (fam === "ml" || pattern.id === "DOCAI") c.push("Monitor accuracy and data drift; set a retraining cadence");
+    if (pattern.usesLLM) c.push("Version prompts and models; rerun the evaluation set before any model change");
+    if (pattern.usesLLM && ["documents", "text", "mixed"].indexOf(p.modality) !== -1) c.push("Treat document and email content as untrusted input (prompt-injection defense)");
+    if (pattern.id === "LLMEXT") c.push("Validate extracted values against master data before use");
+    if (pattern.id === "RAG") c.push("Permission-aware retrieval: users see only documents they can already access");
+    if (pattern.id === "RAG") c.push("Answer 'not covered' when sources do not contain the answer");
+    if (fam === "agentic") c.push("Least-privilege tools; step and cost limits per task");
+    if (pattern.id === "AGENTACT") c.push("Separate read and write tools; idempotent writes; segregation of duties");
+    if (p.sensitivity === "regulated") c.push("Regulated data: redact or keep in-region; contract for no training and minimal retention");
+    if (p.errorCost === "high" && level >= 3) c.push("Periodic sample audit of automatic decisions");
+    return c;
+  }
+
+  function llmTier(id, p) {
+    if (id === "LLMCLS") return "small";
+    if (id === "LLMGEN") return p.errorCost === "high" ? "mid" : "small";
+    if (id === "LLMEXT") return p.volume === "high" && p.variability !== "high" ? "small" : "mid";
+    if (id === "RAG") return p.volume === "high" && p.errorCost === "low" ? "small" : "mid";
+    return "mid";
+  }
+
+  function candidates(pattern, p, registry) {
+    var out = [];
+    var regulated = p.sensitivity === "regulated";
+    var tier = null;
+    if (pattern.usesLLM) {
+      tier = llmTier(pattern.id, p);
+      var opts = registry.llmTiers[tier].options.slice();
+      if (regulated) opts.sort(function (a, b) { return (a.kind === "self-hosted" ? 0 : 1) - (b.kind === "self-hosted" ? 0 : 1); });
+      opts.forEach(function (o) {
+        out.push({ name: o.name, kind: o.kind, note: o.kind === "api" && regulated ? "Only under an enterprise agreement with in-region processing and no training on your data." : (o.kind === "self-hosted" ? "Pick the current release; check the license." : "") });
+      });
+      if (pattern.id === "AGENTACT") out.push({ name: registry.llmTiers.frontier.label + " for long multi-step tasks", kind: "api", note: registry.llmTiers.frontier.options.map(function (o) { return o.name; }).join(", ") });
+    } else {
+      (registry.patterns[pattern.id] || []).forEach(function (o) {
+        out.push({ name: o.name, kind: o.kind, note: o.note + (o.kind === "cloud" && regulated ? " Use an in-region deployment." : "") });
+      });
+    }
+    (registry.supporting[pattern.id] || []).forEach(function (o) { out.push({ name: o.name, kind: o.kind, note: o.note, supporting: true }); });
+    return { tier: tier ? registry.llmTiers[tier].label : null, items: out };
+  }
+
+  function notes(pattern, p) {
+    var n = [];
+    if (p.logic === "partial" && ["RULES", "HUMAN"].indexOf(pattern.id) === -1) n.push("Put the explicit rules in front. They settle the cases they can; this pattern handles the rest.");
+    if (p.labels === "some" && (pattern.family === "ml")) n.push("Labels are sparse. Start with a simple model and invest in label quality before tuning.");
+    if (p.volume === "low" && pattern.family === "ml") n.push("Under 100 items a day, confirm the build and upkeep cost is justified against a person doing it.");
+    if (pattern.usesLLM && p.volume === "high") n.push("At over 10,000 items a day, per-call cost matters. Measure it, and consider distilling to a smaller model.");
+    if (pattern.usesLLM && p.latency === "interactive" && pattern.id !== "LLMCLS") n.push("Interactive latency: stream responses and cap the number of tool calls or retrieved passages.");
+    return n;
+  }
+
+  function assess(profile, data) {
+    var pats = indexBy(data.patterns, "id");
+    var rule = classify(profile);
+    var pattern = pats[rule.pattern];
+    var auto = autonomy(pattern, profile);
+    return {
+      rule: { id: rule.id, label: rule.label, why: rule.why },
+      pattern: pattern,
+      autonomy: auto,
+      controls: controls(pattern, profile, auto.level),
+      candidates: candidates(pattern, profile, data.registry),
+      notes: notes(pattern, profile),
+      whyNot: pattern.whyNot,
+      evalPlan: pattern.eval
+    };
+  }
+
+  function rulebook() {
+    return RULES.concat([FALLBACK]).map(function (r) { return { id: r.id, pattern: r.pattern, label: r.label, why: r.why }; });
+  }
+
+  var api = { assess: assess, classify: classify, rulebook: rulebook, AUTONOMY: AUTONOMY };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.SFAEngine = api;
+})(this);
+
+</script>
+<script>
+(function () {
+  "use strict";
+  var D = window.SFA_DATA;
+  var E = window.SFAEngine;
+  var data = { patterns: D.patterns, registry: D.registry };
+  var PAT = {}; D.patterns.forEach(function (p) { PAT[p.id] = p; });
+  var Q = {}; D.questions.forEach(function (q) { Q[q.id] = q; });
+  var FAMILY = { deterministic: "No AI", ml: "Machine learning", optimization: "Optimization", document: "Document AI", llm: "LLM", agentic: "Agentic", human: "Human" };
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function $(sel) { return document.querySelector(sel); }
+  function famVars(f) { return "--c:var(--f-" + f + ");--cb:var(--f-bg-" + f + ")"; }
+  function chip(p) { return '<span class="chip" style="' + famVars(p.family) + '">' + esc(p.name) + "</span>"; }
+  function optLabel(qid, v) { var o = Q[qid].options.filter(function (x) { return x.v === v; })[0]; return o ? o.label : v; }
+  function short(label) { return label.replace(/\s*\(.*\)\s*$/, ""); }
+  function slug(id) { return id.toLowerCase(); }
+
+  // ---------- Results rendering (shared by Library and Assess) ----------
+  function renderResult(r) {
+    var p = r.pattern, a = r.autonomy;
+    var meter = "";
+    for (var i = 0; i <= 5; i++) meter += '<span class="' + (i <= a.level ? "on" : (i <= a.base ? "cap" : "")) + '"></span>';
+    var caps = a.caps.length ? '<ul class="caps">' + a.caps.map(function (c) { return "<li>Capped: " + esc(c.reason) + "</li>"; }).join("") + "</ul>" : "";
+    var cands = r.candidates.items.length
+      ? (r.candidates.tier ? '<p class="tier">Model tier: <b>' + esc(r.candidates.tier) + "</b></p>" : "") +
+        '<div class="cands">' + r.candidates.items.map(function (c) {
+          return '<div class="cand"><span class="n">' + esc(c.name) + '</span><span class="k">' + esc(c.supporting ? "supporting" : c.kind) + "</span>" + (c.note ? '<span class="note">' + esc(c.note) + "</span>" : "") + "</div>";
+        }).join("") + "</div>" +
+        '<p class="disclaimer" style="margin-top:6px">Registry as of ' + esc(D.registry.asOf) + ". " + esc(D.registry.disclaimer) + "</p>"
+      : '<p class="disclaimer">No model to select. The work is in process design and recording decisions.</p>';
+    return '<div class="rec">' +
+      '<div class="rec-head">' + chip(p) +
+        "<h3>" + esc(p.name) + "</h3>" +
+        '<p class="summary">' + esc(p.summary) + "</p>" +
+        '<p class="rule-fired"><code>' + esc(r.rule.id) + "</code>" + esc(r.rule.label) + ". " + esc(r.rule.why) + "</p>" +
+      "</div>" +
+      (r.notes.length ? '<div class="notes"><ul class="plain">' + r.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul></div>" : "") +
+      '<div class="block"><h4>Autonomy</h4><div class="meter" aria-label="Autonomy level ' + a.level + ' of 5">' + meter + '</div>' +
+        '<div class="meter-legend"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>' +
+        '<p class="auto-text"><b>Level ' + a.level + ": " + esc(a.name) + ".</b> " + esc(a.text) + "</p>" + caps + "</div>" +
+      '<div class="block"><h4>Candidates</h4>' + cands + "</div>" +
+      '<div class="block"><h4>Required controls</h4><ul class="plain">' + r.controls.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="block"><h4>Why not something else</h4><div class="whynot">' + r.whyNot.map(function (w) { return "<div><b>" + esc(w.alt) + ":</b> " + esc(w.text) + "</div>"; }).join("") + "</div></div>" +
+      '<div class="block"><h4>Evaluation plan</h4><dl class="evalp"><dt>Measure</dt><dd>' + r.evalPlan.metrics.map(esc).join("<br>") + "</dd><dt>Baseline</dt><dd>" + esc(r.evalPlan.baseline) + "</dd><dt>Go-live gate</dt><dd>" + esc(r.evalPlan.gate) + "</dd></dl></div>" +
+    "</div>";
+  }
+
+  function toMarkdown(title, profile, r) {
+    var L = [];
+    L.push("## " + title, "");
+    L.push("**Recommended pattern:** " + r.pattern.name + " (" + FAMILY[r.pattern.family] + ")");
+    L.push("**Rule:** " + r.rule.id + " " + r.rule.label + ". " + r.rule.why);
+    L.push("**Autonomy:** Level " + r.autonomy.level + " (" + r.autonomy.name + "). " + r.autonomy.text, "");
+    L.push("### Profile");
+    D.questions.forEach(function (q) { L.push("- " + q.label + " " + short(optLabel(q.id, profile[q.id]))); });
+    if (r.notes.length) { L.push("", "### Notes"); r.notes.forEach(function (n) { L.push("- " + n); }); }
+    if (r.candidates.items.length) {
+      L.push("", "### Candidates" + (r.candidates.tier ? " (" + r.candidates.tier + ")" : ""));
+      r.candidates.items.forEach(function (c) { L.push("- " + c.name + (c.note ? ": " + c.note : "")); });
+    }
+    L.push("", "### Required controls"); r.controls.forEach(function (c) { L.push("- " + c); });
+    L.push("", "### Why not something else"); r.whyNot.forEach(function (w) { L.push("- **" + w.alt + ":** " + w.text); });
+    L.push("", "### Evaluation plan", "- Measure: " + r.evalPlan.metrics.join("; "), "- Baseline: " + r.evalPlan.baseline, "- Go-live gate: " + r.evalPlan.gate);
+    L.push("", "_Generated by AI Solution Fit Advisor. Registry as of " + D.registry.asOf + "._");
+    return L.join("\n");
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = $("#toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 2200);
+  }
+  function copy(text, btn) {
+    var done = function () { toast("Copied as Markdown"); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); });
+    } catch (e) { fallbackCopy(text); }
+  }
+  function fallbackCopy(text) {
+    var ta = $("#copy-fallback"); ta.hidden = false; ta.value = text; ta.focus(); ta.select();
+    toast("Select all and copy the text below");
+  }
+
+  // ---------- Stats ----------
+  var allTasks = [];
+  D.useCases.forEach(function (uc) { uc.tasks.forEach(function (t) { allTasks.push({ uc: uc, t: t, r: E.assess(t.profile, data) }); }); });
+  var llmCount = allTasks.filter(function (x) { return x.r.pattern.usesLLM; }).length;
+  var noAiCount = allTasks.filter(function (x) { return x.r.pattern.family === "deterministic"; }).length;
+  $("#stat-uc").textContent = D.useCases.length;
+  $("#stat-steps").textContent = allTasks.length;
+  $("#stat-llm").textContent = llmCount;
+  $("#stat-noai").textContent = noAiCount;
+
+  // ---------- Library ----------
+  var current = { uc: D.useCases[0], task: 0 };
+  function renderNav() {
+    var groups = {};
+    D.useCases.forEach(function (uc) { (groups[uc.process] = groups[uc.process] || []).push(uc); });
+    var html = "", sel = "";
+    Object.keys(groups).forEach(function (g) {
+      html += '<div class="uc-group"><h3>' + esc(g) + "</h3>";
+      sel += '<optgroup label="' + esc(g) + '">';
+      groups[g].forEach(function (uc) {
+        var dots = uc.tasks.map(function (t) { var f = E.assess(t.profile, data).pattern.family; return '<span class="dot" style="--c:var(--f-' + f + ')"></span>'; }).join("");
+        html += '<button class="uc-item" data-uc="' + esc(uc.id) + '"' + (uc === current.uc ? ' aria-current="true"' : "") + "><span>" + esc(uc.title) + '</span><span class="dots" aria-hidden="true">' + dots + "</span></button>";
+        sel += '<option value="' + esc(uc.id) + '"' + (uc === current.uc ? " selected" : "") + ">" + esc(uc.title) + "</option>";
+      });
+      html += "</div>"; sel += "</optgroup>";
+    });
+    $("#uc-groups").innerHTML = html;
+    $("#uc-select").innerHTML = sel;
+  }
+
+  function renderUseCase() {
+    var uc = current.uc;
+    var flow = uc.tasks.map(function (t, i) {
+      var r = E.assess(t.profile, data);
+      return '<button class="step" data-task="' + i + '" aria-pressed="' + (i === current.task) + '">' +
+        '<span class="sid">' + esc(t.id) + "</span>" +
+        '<span class="sname">' + esc(t.name) + "</span>" +
+        "<span>" + chip(r.pattern) + "</span>" +
+        '<span class="llm-flag' + (r.pattern.usesLLM ? " yes" : "") + '">' + (r.pattern.usesLLM ? "Uses an LLM" : "No LLM") + "</span>" +
+      "</button>";
+    }).join("");
+    var t = uc.tasks[current.task];
+    var r = E.assess(t.profile, data);
+    var dl = D.questions.map(function (q) { return "<dt>" + esc(q.label.replace(/\?$/, "")) + "</dt><dd>" + esc(short(optLabel(q.id, t.profile[q.id]))) + "</dd>"; }).join("");
+    $("#uc-detail").innerHTML =
+      '<div class="uc-head"><span class="eyebrow">' + esc(uc.id) + " · " + esc(uc.process) + "</span>" +
+        "<h2>" + esc(uc.title) + "</h2>" +
+        '<p class="problem">' + esc(uc.problem) + "</p>" +
+        '<div class="kpis">' + uc.kpis.map(function (k) { return '<span class="kpi">' + esc(k) + "</span>"; }).join("") + "</div>" +
+        '<p class="native"><b>Check native first.</b> ' + esc(uc.nativeFirst) + "</p>" +
+      "</div>" +
+      '<p class="section-label">Steps, each with its own pattern</p>' +
+      '<div class="flow" role="group" aria-label="Steps">' + flow + "</div>" +
+      '<div class="result">' +
+        '<div class="card profile"><div class="block"><h4>' + esc(t.id) + " profile</h4><dl>" + dl + "</dl></div>" +
+          '<div class="curator"><b>Practitioner note</b>' + esc(t.note) + "</div>" +
+          '<div class="btn-row"><button class="btn primary" id="btn-edit">Change answers</button><button class="btn" id="btn-copy-lib">Copy as Markdown</button></div>' +
+        "</div>" +
+        '<div class="card">' + renderResult(r) + "</div>" +
+      "</div>";
+    document.querySelectorAll(".step").forEach(function (b) {
+      b.addEventListener("click", function () { current.task = +b.dataset.task; renderUseCase(); });
+    });
+    $("#btn-edit").addEventListener("click", function () { loadIntoAssess(t.profile, uc.title + " / " + t.name); showView("assess"); });
+    $("#btn-copy-lib").addEventListener("click", function () { copy(toMarkdown(uc.title + ": " + t.name, t.profile, r)); });
+  }
+
+  function selectUseCase(id) {
+    var uc = D.useCases.filter(function (u) { return u.id === id; })[0];
+    if (!uc) return;
+    current = { uc: uc, task: 0 };
+    renderNav(); renderUseCase();
+    setHash(slug(id));
+  }
+  $("#uc-groups").addEventListener("click", function (e) { var b = e.target.closest(".uc-item"); if (b) selectUseCase(b.dataset.uc); });
+  $("#uc-select").addEventListener("change", function (e) { selectUseCase(e.target.value); });
+
+  // ---------- Assess ----------
+  var baseProfile = null;
+  function renderForm() {
+    $("#assess-fields").innerHTML = D.questions.map(function (q) {
+      return '<div class="field" id="f-' + q.id + '"><label for="q-' + q.id + '">' + esc(q.label) + "</label>" +
+        (q.help ? '<span class="help">' + esc(q.help) + "</span>" : "") +
+        '<select id="q-' + q.id + '" name="' + q.id + '">' + q.options.map(function (o) { return '<option value="' + esc(o.v) + '">' + esc(o.label) + "</option>"; }).join("") + "</select></div>";
+    }).join("");
+    $("#assess-fields").addEventListener("change", runAssess);
+  }
+  function readForm() { var p = {}; D.questions.forEach(function (q) { p[q.id] = $("#q-" + q.id).value; }); return p; }
+  function loadIntoAssess(profile, from) {
+    baseProfile = Object.assign({}, profile);
+    D.questions.forEach(function (q) { $("#q-" + q.id).value = profile[q.id]; });
+    $("#loaded-from").textContent = from ? "Loaded from: " + from + ". Changed answers are highlighted." : "";
+    runAssess();
+  }
+  var lastAssess = null;
+  function runAssess() {
+    var p = readForm();
+    D.questions.forEach(function (q) { $("#f-" + q.id).classList.toggle("changed", !!baseProfile && baseProfile[q.id] !== p[q.id]); });
+    var r = E.assess(p, data);
+    lastAssess = { p: p, r: r };
+    $("#assess-result").innerHTML = renderResult(r);
+  }
+  $("#btn-copy-assess").addEventListener("click", function () { if (lastAssess) copy(toMarkdown("Assessment", lastAssess.p, lastAssess.r)); });
+  $("#btn-reset").addEventListener("click", function () { var s = D.useCases[1].tasks[1]; loadIntoAssess(s.profile, D.useCases[1].title + " / " + s.name); });
+
+  // ---------- Rulebook ----------
+  function renderRulebook() {
+    $("#rules-body").innerHTML = E.rulebook().map(function (r) {
+      return "<tr><td><code>" + esc(r.id) + "</code></td><td>" + esc(r.label) + "</td><td>" + chip(PAT[r.pattern]) + "</td><td>" + esc(r.why) + "</td></tr>";
+    }).join("");
+    $("#auto-body").innerHTML = E.AUTONOMY.map(function (a) { return "<tr><td><code>" + a.level + "</code></td><td>" + esc(a.name) + "</td><td>" + esc(a.text) + "</td></tr>"; }).join("");
+    $("#pat-body").innerHTML = D.patterns.map(function (p) {
+      var n = allTasks.filter(function (x) { return x.r.pattern.id === p.id; }).length;
+      return "<tr><td>" + chip(p) + "</td><td>" + (p.usesLLM ? "Yes" : "No") + "</td><td>" + esc(p.summary) + '</td><td style="font-variant-numeric:tabular-nums">' + n + "</td></tr>";
+    }).join("");
+  }
+
+  // ---------- Tabs and deep links ----------
+  var VIEWS = ["library", "assess", "rules", "about"];
+  function showView(v) {
+    VIEWS.forEach(function (x) {
+      $("#view-" + x).hidden = x !== v;
+      $("#tab-" + x).setAttribute("aria-selected", x === v ? "true" : "false");
+    });
+    setHash(v === "library" ? slug(current.uc.id) : v);
+    window.scrollTo(0, 0);
+  }
+  function setHash(h) { try { history.replaceState(null, "", "#" + h); } catch (e) { /* ignore */ } }
+  VIEWS.forEach(function (v) { $("#tab-" + v).addEventListener("click", function () { showView(v); }); });
+
+  renderNav(); renderForm(); renderRulebook();
+  var sample = D.useCases[1].tasks[1];
+  loadIntoAssess(sample.profile, D.useCases[1].title + " / " + sample.name);
+  var h = (location.hash || "").slice(1).toLowerCase();
+  var hit = D.useCases.filter(function (u) { return slug(u.id) === h; })[0];
+  if (hit) current = { uc: hit, task: 0 };
+  renderNav(); renderUseCase();
+  if (VIEWS.indexOf(h) !== -1 && h !== "library") showView(h);
+})();
+
+</script>
+</body>
+</html>

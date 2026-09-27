@@ -1,0 +1,131 @@
+[
+  {
+    "id": "task",
+    "label": "What does this step need to do?",
+    "help": "Describe one step, not the whole use case. Most use cases need two or three steps with different patterns.",
+    "options": [
+      { "v": "predict", "label": "Estimate a score or probability for a record (risk, propensity, ETA)" },
+      { "v": "classify", "label": "Assign a category or route (reason code, resolver, taxonomy)" },
+      { "v": "forecast", "label": "Predict future values over time (demand, volume, cash)" },
+      { "v": "optimize", "label": "Choose the best plan under constraints (allocate, schedule, select)" },
+      { "v": "match", "label": "Link records across sources (payment to invoice, item to master)" },
+      { "v": "extract", "label": "Pull fields out of documents, scans, or emails" },
+      { "v": "anomaly", "label": "Flag unusual or duplicate records" },
+      { "v": "decide", "label": "Apply a policy, check, or decision (approve, hold, validate)" },
+      { "v": "answer", "label": "Answer questions from policies, contracts, or other documents" },
+      { "v": "generate", "label": "Draft text (messages, summaries, explanations)" },
+      { "v": "act", "label": "Carry out multi-step actions across systems" }
+    ]
+  },
+  {
+    "id": "modality",
+    "label": "What does the input look like?",
+    "help": "The dominant input for this step.",
+    "options": [
+      { "v": "structured", "label": "Structured records (ERP tables, master data)" },
+      { "v": "timeseries", "label": "Time series (history by period or by event)" },
+      { "v": "documents", "label": "Documents (PDF, scans, images)" },
+      { "v": "text", "label": "Free text (email, notes, chat)" },
+      { "v": "mixed", "label": "Mixed structured and unstructured" }
+    ]
+  },
+  {
+    "id": "logic",
+    "label": "Can the decision logic be written down as rules today?",
+    "help": "If an experienced analyst can state the rule, it is a rule. This is the most important question.",
+    "options": [
+      { "v": "full", "label": "Yes, fully (tolerances, thresholds, policy tables)" },
+      { "v": "partial", "label": "Partly (rules cover the common cases, judgment covers the rest)" },
+      { "v": "none", "label": "No (it depends on patterns or judgment)" }
+    ]
+  },
+  {
+    "id": "labels",
+    "label": "Do you have historical outcomes for this step?",
+    "help": "Past decisions or results you could learn from, such as which invoices were paid late or which matches were confirmed.",
+    "options": [
+      { "v": "yes", "label": "Yes, thousands of recorded outcomes" },
+      { "v": "some", "label": "Some, but sparse or inconsistent" },
+      { "v": "none", "label": "None" }
+    ]
+  },
+  {
+    "id": "volume",
+    "label": "How many items per day?",
+    "help": "Drives cost and model size.",
+    "options": [
+      { "v": "low", "label": "Under 100" },
+      { "v": "medium", "label": "100 to 10,000" },
+      { "v": "high", "label": "Over 10,000" }
+    ]
+  },
+  {
+    "id": "latency",
+    "label": "How fast is a result needed?",
+    "help": "",
+    "options": [
+      { "v": "batch", "label": "Batch (hourly or daily)" },
+      { "v": "near", "label": "Near real time (minutes)" },
+      { "v": "interactive", "label": "Interactive (a person is waiting, seconds)" }
+    ]
+  },
+  {
+    "id": "errorCost",
+    "label": "What does a wrong result cost?",
+    "help": "Think financial exposure, compliance, and customer impact.",
+    "options": [
+      { "v": "low", "label": "Low (easy to spot and correct)" },
+      { "v": "medium", "label": "Medium (rework or delay)" },
+      { "v": "high", "label": "High (financial loss, compliance breach, customer harm)" }
+    ]
+  },
+  {
+    "id": "explain",
+    "label": "Must each result be explainable to an auditor or user?",
+    "help": "",
+    "options": [
+      { "v": "required", "label": "Required (audit, regulation, credit decisions)" },
+      { "v": "helpful", "label": "Helpful for adoption" },
+      { "v": "none", "label": "Not needed" }
+    ]
+  },
+  {
+    "id": "writes",
+    "label": "Does the result change a system of record?",
+    "help": "Posting, releasing, paying, or sending counts as a write.",
+    "options": [
+      { "v": "none", "label": "No (advisory or read-only)" },
+      { "v": "reversible", "label": "Yes, and it can be reversed (draft, hold, reroute)" },
+      { "v": "irreversible", "label": "Yes, and it is hard to reverse (payment, release, customer message)" }
+    ]
+  },
+  {
+    "id": "sensitivity",
+    "label": "How sensitive is the data?",
+    "help": "",
+    "options": [
+      { "v": "internal", "label": "Internal business data" },
+      { "v": "confidential", "label": "Confidential (pricing, contracts, customer terms)" },
+      { "v": "regulated", "label": "Regulated (personal data, bank or payment data)" }
+    ]
+  },
+  {
+    "id": "variability",
+    "label": "How much do input formats vary?",
+    "help": "For example, one EDI format versus thousands of supplier invoice layouts.",
+    "options": [
+      { "v": "low", "label": "Low (standard formats)" },
+      { "v": "moderate", "label": "Moderate (a known set of layouts)" },
+      { "v": "high", "label": "High (open-ended layouts or free text)" }
+    ]
+  },
+  {
+    "id": "constraints",
+    "label": "Are there hard constraints the result must respect?",
+    "help": "Capacity, contracts, budgets, time windows.",
+    "options": [
+      { "v": "yes", "label": "Yes" },
+      { "v": "no", "label": "No" }
+    ]
+  }
+]

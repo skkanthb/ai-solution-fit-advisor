@@ -1,0 +1,406 @@
+[
+  {
+    "id": "RULES",
+    "name": "Deterministic rules",
+    "family": "deterministic",
+    "usesLLM": false,
+    "summary": "Encode the logic as configuration, decision tables, or code. Check native ERP capability first.",
+    "baseAutonomy": 5,
+    "whyNot": [
+      {
+        "alt": "LLM",
+        "text": "The logic is already known. An LLM would re-derive it probabilistically, add cost and latency, and make the result harder to audit."
+      },
+      {
+        "alt": "Machine learning",
+        "text": "Learning a rule you can already state adds training, drift monitoring, and error for no gain."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Rule coverage (share of items decided without manual touch)",
+        "Exception rate by rule",
+        "Defect rate found in sample audit"
+      ],
+      "baseline": "Current manual or native-ERP process",
+      "gate": "Zero known rule conflicts; exception queue sized for the team that works it"
+    }
+  },
+  {
+    "id": "FUZZY",
+    "name": "Deterministic + fuzzy matching",
+    "family": "deterministic",
+    "usesLLM": false,
+    "summary": "Exact keys first, then similarity scoring on names, amounts, dates, and references. Route low-confidence matches to a person.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "LLM",
+        "text": "Matching is a scoring problem over structured fields. String similarity and amount/date tolerances are faster, cheaper, and reproducible. An LLM can help only with reading an unusual free-text reference."
+      },
+      {
+        "alt": "Pure rules",
+        "text": "Exact-key rules alone leave the long tail (typos, partial payments, truncated references) to manual work."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Auto-match rate",
+        "Match precision on a labeled sample (target near 100%)",
+        "Recall on known matches"
+      ],
+      "baseline": "Current auto-match rate in ERP",
+      "gate": "Precision on auto-matched items meets finance tolerance (typically 99%+) before auto-posting"
+    }
+  },
+  {
+    "id": "TABML",
+    "name": "Tabular machine learning",
+    "family": "ml",
+    "usesLLM": false,
+    "summary": "Supervised model (gradient-boosted trees) trained on your historical outcomes, with reason codes per prediction.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "LLM",
+        "text": "LLMs are not trained on your outcome history and do not produce calibrated probabilities on tabular data. A gradient-boosted model is cheaper per prediction, faster, and gives per-record reason codes."
+      },
+      {
+        "alt": "Rules",
+        "text": "The signal is a combination of many factors (history, seasonality, counterparty). Hand-written thresholds miss those interactions."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "AUC / precision at top-k",
+        "Calibration (predicted vs actual rate)",
+        "Lift over current rule or heuristic"
+      ],
+      "baseline": "Current rule, heuristic, or 'last value' baseline",
+      "gate": "Out-of-time backtest beats baseline on the business metric, not only on AUC"
+    }
+  },
+  {
+    "id": "ANOM",
+    "name": "Anomaly detection + rules",
+    "family": "ml",
+    "usesLLM": false,
+    "summary": "Unsupervised scoring of unusual records, layered on explicit checks. Output is a review queue, not an automatic block.",
+    "baseAutonomy": 1,
+    "whyNot": [
+      {
+        "alt": "LLM",
+        "text": "Unusualness is a statistical property of your data distribution. An LLM has no view of that distribution."
+      },
+      {
+        "alt": "Supervised ML",
+        "text": "Without confirmed past cases there is nothing to train a classifier on. Start unsupervised and collect reviewer verdicts as labels."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Precision of flagged items after review",
+        "Value recovered or prevented",
+        "Reviewer workload per week"
+      ],
+      "baseline": "Current audit sampling",
+      "gate": "Flag volume fits reviewer capacity with precision high enough that reviewers keep using it"
+    }
+  },
+  {
+    "id": "TS",
+    "name": "Time-series forecasting",
+    "family": "ml",
+    "usesLLM": false,
+    "summary": "Statistical and ML forecasters benchmarked against a naive baseline, with forecast intervals.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "LLM",
+        "text": "General LLMs are not forecasting models. Purpose-built statistical, ML, or time-series foundation models are cheaper and measurably better."
+      },
+      {
+        "alt": "Rules",
+        "text": "Fixed rules such as 'last year plus 5%' ignore trend shifts and seasonality."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "WAPE / MASE by segment",
+        "Bias",
+        "Forecast value added over naive"
+      ],
+      "baseline": "Seasonal naive forecast",
+      "gate": "Beats seasonal naive on held-out periods for the segments that matter"
+    }
+  },
+  {
+    "id": "OPT",
+    "name": "Mathematical optimization",
+    "family": "optimization",
+    "usesLLM": false,
+    "summary": "Model the objective and constraints explicitly and solve with an LP/MIP or constraint solver. Planners approve the proposed plan.",
+    "baseAutonomy": 2,
+    "whyNot": [
+      {
+        "alt": "LLM or agent",
+        "text": "Choosing the best plan under hard constraints is a solver problem. LLMs cannot guarantee feasibility or optimality and will violate constraints silently."
+      },
+      {
+        "alt": "Rules",
+        "text": "Greedy rules work for simple cases but leave cost on the table when constraints interact."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Cost or service vs current plan",
+        "Constraint violations (must be zero)",
+        "Planner acceptance rate"
+      ],
+      "baseline": "Current planner decisions on the same historical scenarios",
+      "gate": "Zero hard-constraint violations on replayed history and a measurable cost or service gain"
+    }
+  },
+  {
+    "id": "DOCAI",
+    "name": "Document AI + validation rules",
+    "family": "document",
+    "usesLLM": false,
+    "summary": "Pretrained document models extract fields; rules validate them against master data. Low-confidence fields go to a person.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "General LLM",
+        "text": "For known document types at volume, pretrained document models give per-field confidence, lower cost, and stable output. Use an LLM or vision model as a fallback for the layouts they miss."
+      },
+      {
+        "alt": "Templates / OCR only",
+        "text": "Template OCR breaks every time a supplier changes layout."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Field-level accuracy",
+        "Straight-through processing rate",
+        "Touches per document"
+      ],
+      "baseline": "Current manual keying time and error rate",
+      "gate": "Field accuracy on critical fields (amounts, tax, bank) meets finance tolerance with confidence routing on"
+    }
+  },
+  {
+    "id": "LLMEXT",
+    "name": "LLM / vision-model extraction",
+    "family": "llm",
+    "usesLLM": true,
+    "summary": "A vision-capable LLM returns fields in a fixed schema. Rules validate the output before anything is posted.",
+    "baseAutonomy": 3,
+    "whyNot": [
+      {
+        "alt": "Document AI",
+        "text": "Layouts vary too much, or the source is free-text email, for pretrained document models to cover well."
+      },
+      {
+        "alt": "Manual entry",
+        "text": "Volume and variety make manual keying the bottleneck."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Field-level accuracy against a labeled set",
+        "Schema-valid output rate",
+        "Hallucinated-field rate (values not present in source)"
+      ],
+      "baseline": "Manual keying accuracy and time",
+      "gate": "No hallucinated values on critical fields in the test set; validation rules catch the rest"
+    }
+  },
+  {
+    "id": "SMALL",
+    "name": "Small / fine-tuned text classifier",
+    "family": "ml",
+    "usesLLM": false,
+    "summary": "Embeddings or a small fine-tuned encoder trained on your labeled text. Cheap at volume and consistent.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "Large LLM",
+        "text": "With labeled examples, a small classifier matches or beats a large LLM on a fixed label set at a fraction of the cost and latency."
+      },
+      {
+        "alt": "Keyword rules",
+        "text": "Keyword rules break on phrasing variation and need constant upkeep."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Macro F1 across classes",
+        "Accuracy on high-value classes",
+        "Share auto-classified above confidence threshold"
+      ],
+      "baseline": "Current manual coding or keyword rules",
+      "gate": "Meets accuracy target on held-out data, with low-confidence items routed to review"
+    }
+  },
+  {
+    "id": "LLMCLS",
+    "name": "LLM classification (bootstrap)",
+    "family": "llm",
+    "usesLLM": true,
+    "summary": "A small, fast LLM classifies with few-shot examples while labels are scarce. Plan to replace it with a small classifier once reviewed labels exist.",
+    "baseAutonomy": 3,
+    "whyNot": [
+      {
+        "alt": "Small classifier",
+        "text": "There are not yet enough labeled examples to train one. Use the LLM's reviewed outputs to build that label set."
+      },
+      {
+        "alt": "Keyword rules",
+        "text": "Free text varies too much for keywords to route reliably."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Accuracy on a reviewed sample",
+        "Agreement with expert reviewers",
+        "Cost per 1,000 items"
+      ],
+      "baseline": "Manual triage",
+      "gate": "Reviewer agreement meets target; misroutes are recoverable"
+    }
+  },
+  {
+    "id": "RAG",
+    "name": "Retrieval-augmented generation",
+    "family": "llm",
+    "usesLLM": true,
+    "summary": "Retrieve the relevant passages the user is allowed to see, then answer with citations. Say 'not covered' when the sources do not answer.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "LLM without retrieval",
+        "text": "Policies and contracts are private and change. Without retrieval the model guesses."
+      },
+      {
+        "alt": "Fine-tuning",
+        "text": "Fine-tuning does not reliably teach facts and must be redone whenever documents change."
+      },
+      {
+        "alt": "Search only",
+        "text": "Keyword search returns documents, not answers. Keep it as the retrieval layer."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Answer correctness on a question set written by policy owners",
+        "Citation faithfulness",
+        "Correct 'not covered' rate"
+      ],
+      "baseline": "Time to answer by asking the policy owner",
+      "gate": "No uncited claims on the test set; permission-aware retrieval verified"
+    }
+  },
+  {
+    "id": "LLMGEN",
+    "name": "LLM drafting with human review",
+    "family": "llm",
+    "usesLLM": true,
+    "summary": "An LLM drafts text from facts the system already computed. A person reviews before it is sent or filed.",
+    "baseAutonomy": 2,
+    "whyNot": [
+      {
+        "alt": "Templates",
+        "text": "Fixed templates cannot adapt to account context. Keep templates for legally required wording."
+      },
+      {
+        "alt": "LLM deciding",
+        "text": "The LLM drafts. It should not decide the facts it is writing about; those come from rules or models upstream."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Reviewer edit rate",
+        "Factual errors vs source data",
+        "Time saved per item"
+      ],
+      "baseline": "Current time to write manually",
+      "gate": "No factual contradictions with source data in the review sample"
+    }
+  },
+  {
+    "id": "AGENTRO",
+    "name": "Tool-using LLM, read-only",
+    "family": "agentic",
+    "usesLLM": true,
+    "summary": "An LLM plans lookups across systems through scoped read-only tools and assembles the answer or case file. No writes.",
+    "baseAutonomy": 4,
+    "whyNot": [
+      {
+        "alt": "Fixed workflow",
+        "text": "The lookups needed differ case by case, so a fixed sequence would miss or over-fetch."
+      },
+      {
+        "alt": "Write-capable agent",
+        "text": "Gathering information does not need write access. Keeping it read-only removes most of the risk."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Task success on a scenario set",
+        "Tool calls per task",
+        "Answers contradicting system data"
+      ],
+      "baseline": "Time for a person to gather the same information",
+      "gate": "Scenario success meets target; no tool outside the read-only scope is callable"
+    }
+  },
+  {
+    "id": "AGENTACT",
+    "name": "Bounded agent with approval gates",
+    "family": "agentic",
+    "usesLLM": true,
+    "summary": "An LLM executes multi-step changes through scoped tools. Each write passes an approval gate and value limit.",
+    "baseAutonomy": 2,
+    "whyNot": [
+      {
+        "alt": "Fixed workflow / RPA",
+        "text": "Use a fixed workflow if the steps are known. An agent is justified only when the path varies case by case."
+      },
+      {
+        "alt": "Full autonomy",
+        "text": "Unapproved writes to a system of record are hard to audit and reverse."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Task success on scenarios",
+        "Unauthorized or out-of-policy actions (must be zero)",
+        "Approval rejection rate"
+      ],
+      "baseline": "Manual handling time",
+      "gate": "Zero out-of-policy actions in adversarial and replayed scenarios"
+    }
+  },
+  {
+    "id": "HUMAN",
+    "name": "Human decision, AI prepares",
+    "family": "human",
+    "usesLLM": false,
+    "summary": "Keep the decision with a person. Automate data gathering around it and record decisions so they can become training data later.",
+    "baseAutonomy": 1,
+    "whyNot": [
+      {
+        "alt": "Automating the decision",
+        "text": "The logic is not explicit and the cost of a wrong call is high, or there is no history to learn from. Automating now would be guessing."
+      }
+    ],
+    "eval": {
+      "metrics": [
+        "Decision cycle time",
+        "Share of decisions recorded with reason codes"
+      ],
+      "baseline": "Current cycle time",
+      "gate": "Enough recorded decisions to revisit automation"
+    }
+  }
+]

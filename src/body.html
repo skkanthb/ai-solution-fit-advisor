@@ -1,0 +1,100 @@
+<header class="top">
+  <div class="wrap">
+    <div class="top-inner">
+      <div class="brand">
+        <h1>AI Solution Fit Advisor</h1>
+        <p>Pick the right approach for each step of an ERP or supply chain use case before picking a model. Rules decide; nothing here calls an LLM.</p>
+      </div>
+      <div class="headline" aria-label="Library summary">
+        <div class="hstat"><b id="stat-uc">0</b><span>use cases</span></div>
+        <div class="hstat"><b id="stat-steps">0</b><span>steps assessed</span></div>
+        <div class="hstat"><b id="stat-llm">0</b><span>steps that need an LLM</span></div>
+        <div class="hstat"><b id="stat-noai">0</b><span>steps that need no AI</span></div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-library" aria-selected="true">Use case library</button>
+      <button class="tab" role="tab" id="tab-assess" aria-selected="false">Assess a step</button>
+      <button class="tab" role="tab" id="tab-rules" aria-selected="false">Rulebook</button>
+      <button class="tab" role="tab" id="tab-about" aria-selected="false">Method and limits</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="view-library" role="tabpanel" aria-labelledby="tab-library">
+    <div class="lib">
+      <aside class="uc-nav">
+        <label class="uc-select-label" for="uc-select" hidden>Use case</label>
+        <select class="uc-select" id="uc-select" aria-label="Use case"></select>
+        <div class="uc-groups" id="uc-groups"></div>
+      </aside>
+      <div id="uc-detail"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-assess" role="tabpanel" aria-labelledby="tab-assess" hidden>
+    <div class="assess">
+      <form class="card assess-form" id="assess-form" onsubmit="return false">
+        <p class="intro">Answer for one step of your use case. The recommendation updates as you change answers. The sample below is loaded from the library; change any answer to see how the recommendation moves.</p>
+        <p class="loaded-from" id="loaded-from"></p>
+        <div id="assess-fields" class="assess-form"></div>
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="btn-copy-assess">Copy as Markdown</button>
+          <button type="button" class="btn" id="btn-reset">Reset to sample</button>
+        </div>
+      </form>
+      <div class="card" id="assess-result"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+    <div class="stack">
+      <div class="prose">
+        <h2>Rulebook</h2>
+        <p>Rules are checked top to bottom and the first match wins. Order encodes precedence: explicit logic beats learned logic, and the shape of the problem beats the format of the input.</p>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Rule</th><th>When</th><th>Pattern</th><th>Reason</th></tr></thead>
+        <tbody id="rules-body"></tbody>
+      </table></div>
+      <div class="prose"><h2>Autonomy levels</h2><p>Each pattern has a default level. Error cost, irreversible writes, and explainability requirements cap it.</p></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Level</th><th>Name</th><th>Meaning</th></tr></thead>
+        <tbody id="auto-body"></tbody>
+      </table></div>
+      <div class="prose"><h2>Patterns</h2></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Pattern</th><th>LLM</th><th>What it is</th><th>Steps in library</th></tr></thead>
+        <tbody id="pat-body"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <div class="prose">
+      <h2>What this is</h2>
+      <p>A decision aid for AI architects, SI practices, and presales teams. It breaks an enterprise use case into steps and recommends a solution pattern for each: rules, matching, tabular ML, forecasting, optimization, document AI, LLM patterns, agents, or keeping a person in charge.</p>
+      <p>Most use cases turn out to be mixed. A credit hold release process is a rule, a risk model, and an optional LLM summary, not "an AI agent for credit".</p>
+      <h2>How it decides</h2>
+      <ul>
+        <li>Twelve questions describe one step: what it must do, input type, whether the logic is explicit, available history, volume, latency, error cost, explainability, whether it writes to a system of record, data sensitivity, format variability, and constraints.</li>
+        <li>An ordered rulebook maps the answers to a pattern. The rule that fired is shown with every result.</li>
+        <li>Autonomy, controls, model candidates, and the evaluation plan are derived from the pattern and the answers.</li>
+        <li>No LLM is involved in the decision. The same answers always give the same result.</li>
+      </ul>
+      <h2>Limits</h2>
+      <ul>
+        <li>The library profiles and notes reflect one practitioner's ERP and supply chain experience. They have not been validated against measured project outcomes.</li>
+        <li>Real steps are often borderline between two patterns. Treat the output as a starting position for an architecture review, not a verdict.</li>
+        <li>Model names go stale. The registry is dated; check current versions and your contract terms.</li>
+        <li>It does not estimate cost or ROI, and it does not look at your data. Data quality problems will break any pattern.</li>
+        <li>Scope is O2C, P2P, and logistics. Planning, manufacturing, and service are not covered yet.</li>
+      </ul>
+      <h2>Source</h2>
+      <p>Code is MIT licensed; decision content (rules, patterns, use cases) is CC BY 4.0. Source and issue tracker: <a href="https://github.com/skkanthb/ai-solution-fit-advisor" target="_blank" rel="noopener">github.com/skkanthb/ai-solution-fit-advisor</a>.</p>
+    </div>
+  </section>
+</main>
+<textarea id="copy-fallback" hidden rows="8" style="position:fixed;left:16px;right:16px;bottom:70px;width:calc(100% - 32px)" aria-label="Markdown to copy"></textarea>
+<div class="toast" id="toast" role="status" hidden></div>

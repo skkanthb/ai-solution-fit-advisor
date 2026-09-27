@@ -1,0 +1,92 @@
+{
+  "asOf": "2026-09",
+  "disclaimer": "Named options are starting points, not endorsements. LLM versions change every few months: confirm the current version, pricing, and your contract terms before relying on any entry.",
+  "patterns": {
+    "RULES": [
+      { "name": "Native ERP configuration", "kind": "native", "note": "SAP S/4HANA and Oracle ship configurable checks (tolerances, credit rules, validations). Use them before building anything." },
+      { "name": "DMN decision tables", "kind": "open-source", "note": "Camunda or Drools when rules must live outside the ERP and be owned by the business." },
+      { "name": "SQL / scripted validation", "kind": "open-source", "note": "For batch checks across systems." }
+    ],
+    "FUZZY": [
+      { "name": "RapidFuzz", "kind": "open-source", "note": "Fast string similarity for names and references." },
+      { "name": "Splink", "kind": "open-source", "note": "Probabilistic record linkage with explainable match weights." },
+      { "name": "Native ERP matching rules", "kind": "native", "note": "Most ERPs support rule-based auto-matching. Measure its rate first." }
+    ],
+    "TABML": [
+      { "name": "LightGBM", "kind": "open-source", "note": "Fast gradient-boosted trees; strong default for tabular data." },
+      { "name": "XGBoost", "kind": "open-source", "note": "Equivalent alternative with broad platform support." },
+      { "name": "CatBoost", "kind": "open-source", "note": "Handles many categorical fields (customer, material, plant) with less preprocessing." },
+      { "name": "SHAP", "kind": "open-source", "note": "Per-prediction reason codes for audit and user trust." },
+      { "name": "Logistic regression", "kind": "open-source", "note": "Baseline to beat, and the fallback when explainability requirements are strict." }
+    ],
+    "ANOM": [
+      { "name": "Isolation Forest (scikit-learn)", "kind": "open-source", "note": "Simple, fast unsupervised baseline." },
+      { "name": "PyOD", "kind": "open-source", "note": "Library of detectors to benchmark once reviewers have labeled some flags." }
+    ],
+    "TS": [
+      { "name": "StatsForecast (AutoETS, AutoARIMA)", "kind": "open-source", "note": "Fast statistical baselines at scale." },
+      { "name": "MLForecast with LightGBM", "kind": "open-source", "note": "Global ML model across many series with external drivers." },
+      { "name": "Chronos / TimesFM", "kind": "open-source", "note": "Time-series foundation models. Benchmark as challengers, not defaults." }
+    ],
+    "OPT": [
+      { "name": "Google OR-Tools (CP-SAT)", "kind": "open-source", "note": "Scheduling, assignment, and routing with complex constraints." },
+      { "name": "HiGHS", "kind": "open-source", "note": "Open-source LP/MIP solver." },
+      { "name": "Gurobi / IBM CPLEX", "kind": "commercial", "note": "Commercial solvers for large MIP models." },
+      { "name": "Pyomo / PuLP", "kind": "open-source", "note": "Modeling layer so the model is solver-independent." }
+    ],
+    "DOCAI": [
+      { "name": "Azure AI Document Intelligence (prebuilt invoice)", "kind": "cloud", "note": "Prebuilt invoice and receipt models with field confidence." },
+      { "name": "Amazon Textract (AnalyzeExpense)", "kind": "cloud", "note": "Invoice and receipt extraction." },
+      { "name": "Google Document AI (Invoice Parser)", "kind": "cloud", "note": "Prebuilt invoice processor." },
+      { "name": "Docling", "kind": "open-source", "note": "Self-hosted document parsing when data cannot leave your environment." }
+    ],
+    "SMALL": [
+      { "name": "Sentence embeddings + logistic regression", "kind": "open-source", "note": "Fast baseline; often enough." },
+      { "name": "SetFit", "kind": "open-source", "note": "Few-shot fine-tuning of small encoders from a few hundred labels." },
+      { "name": "Fine-tuned ModernBERT or DeBERTa-v3", "kind": "open-source", "note": "Higher accuracy with thousands of labels; runs on CPU or a small GPU." }
+    ]
+  },
+  "llmTiers": {
+    "small": {
+      "label": "Small, fast LLM",
+      "options": [
+        { "name": "Claude Haiku 4.5", "kind": "api", "vendor": "Anthropic" },
+        { "name": "OpenAI small tier (GPT mini class)", "kind": "api", "vendor": "OpenAI" },
+        { "name": "Google Gemini Flash tier", "kind": "api", "vendor": "Google" },
+        { "name": "Open-weight 7–32B (Qwen, Llama, Mistral, Gemma families)", "kind": "self-hosted", "vendor": "Open weights" }
+      ]
+    },
+    "mid": {
+      "label": "Mid-tier LLM",
+      "options": [
+        { "name": "Claude Sonnet 5", "kind": "api", "vendor": "Anthropic" },
+        { "name": "OpenAI flagship GPT tier", "kind": "api", "vendor": "OpenAI" },
+        { "name": "Google Gemini Pro tier", "kind": "api", "vendor": "Google" },
+        { "name": "Open-weight 70B+ class", "kind": "self-hosted", "vendor": "Open weights" }
+      ]
+    },
+    "frontier": {
+      "label": "Frontier LLM",
+      "options": [
+        { "name": "Claude Opus 5.5", "kind": "api", "vendor": "Anthropic" },
+        { "name": "OpenAI top reasoning tier", "kind": "api", "vendor": "OpenAI" },
+        { "name": "Google Gemini top tier", "kind": "api", "vendor": "Google" }
+      ]
+    }
+  },
+  "supporting": {
+    "RAG": [
+      { "name": "Hybrid search (BM25 + vectors)", "kind": "open-source", "note": "OpenSearch, Elasticsearch, or Postgres with pgvector. Policy language needs exact-term matching as well as semantic search." },
+      { "name": "Reranker", "kind": "open-source", "note": "Cross-encoder reranking to put the right clause first." }
+    ],
+    "AGENTRO": [
+      { "name": "MCP servers with read-only scopes", "kind": "open-source", "note": "Expose ERP/TMS lookups as narrow tools, not raw database access." }
+    ],
+    "AGENTACT": [
+      { "name": "MCP servers with per-tool approval", "kind": "open-source", "note": "Separate read and write tools; writes require approval and carry value limits." }
+    ],
+    "LLMEXT": [
+      { "name": "Structured output / JSON schema mode", "kind": "api", "note": "Force a fixed schema; reject and retry on schema failure." }
+    ]
+  }
+}
