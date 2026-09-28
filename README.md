@@ -1,6 +1,6 @@
 # AI Solution Fit Advisor
 
-Recommends the right approach for each step of an ERP or supply chain use case, before anyone picks a model.
+Recommends the right approach for each step of an enterprise business process, before anyone picks a model.
 
 **Live demo:** https://skkanthb.github.io/ai-solution-fit-advisor/
 

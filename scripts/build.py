@@ -25,7 +25,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">')
 TITLE = "<title>AI Solution Fit Advisor</title>"
 DESC = ('<meta name="description" content="Recommends the right AI approach, or no AI, for each step of '
-        'an ERP and supply chain use case: rules, ML, optimization, document AI, LLMs, or agents.">')
+        'an enterprise business process: rules, ML, optimization, document AI, LLMs, or agents.">')
 
 head_inner = TITLE + "\n" + FONTS + "\n<style>\n" + read("src/styles.css") + "\n</style>"
 scripts = ("<script>\n" + data_js + "\n</script>\n<script>\n" + read("src/engine.js") +
