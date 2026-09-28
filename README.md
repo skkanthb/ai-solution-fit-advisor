@@ -4,6 +4,8 @@ Recommends the right approach for each step of an enterprise business process, b
 
 **Live demo:** https://skkanthb.github.io/ai-solution-fit-advisor/
 
+**Write-up:** [Do LLMs recommend LLMs for everything?](https://kanthbasavaraju.substack.com/p/do-llms-recommend-llms-for-everything), a simple experiment with two current models ([results](docs/llm-baseline.md))
+
 Teams often start with "which LLM should we use?" The earlier question is what kind of problem each step is. A credit hold release process, for example, is a policy rule, a risk score, and an optional summary for the analyst. That's three patterns, and only one of them needs an LLM.
 
 This tool makes that decomposition explicit. For each step it shows:
